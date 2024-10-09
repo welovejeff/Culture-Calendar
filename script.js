@@ -31,7 +31,7 @@ function loadCSVData() {
 // Modify the populateCategoryFilter function
 function populateCategoryFilter() {
     const categorySelect = document.getElementById('category-select');
-    console.log('Populating category filter'); // Add this line
+    console.log('Populating category filter');
     categorySelect.innerHTML = '';
     categories.forEach(category => {
         const option = document.createElement('option');
@@ -42,11 +42,11 @@ function populateCategoryFilter() {
     });
     selectedCategories = [...categories]; // All categories selected by default
     
-    console.log('Category filter populated with options:', categorySelect.options.length); // Add this line
+    console.log('Category filter populated with options:', categorySelect.options.length);
     
     categorySelect.addEventListener('change', function() {
         selectedCategories = Array.from(this.selectedOptions).map(option => option.value);
-        console.log('Selected categories:', selectedCategories); // Add this line
+        console.log('Selected categories:', selectedCategories);
         renderCalendar();
     });
 }
@@ -523,30 +523,43 @@ function openEventModal(event) {
     }
 }
 
-// Modify the window.onload function to ensure populateCategoryFilter is called
+// Add this function to handle the auto-populate toggle
+function setupAutoPopulateToggle() {
+    const toggleButton = document.getElementById('toggle-auto-populate');
+    const controls = document.getElementById('auto-populate-controls');
+    
+    toggleButton.addEventListener('click', function() {
+        if (controls.style.display === 'none') {
+            controls.style.display = 'block';
+            this.textContent = 'Hide';
+        } else {
+            controls.style.display = 'none';
+            this.textContent = 'Show';
+        }
+    });
+}
+
+// Modify the window.onload function
 window.onload = function() {
     loadFromLocalStorage();
     
     loadCSVData().then(() => {
         console.log('CSV data loaded, rendering calendar');
         renderCalendar();
+        setupAutoPopulateToggle(); // Add this line
     }).catch(error => {
         console.error('Failed to load CSV data:', error);
         alert('Failed to load CSV data. The calendar will render without events.');
         renderCalendar();
     });
     
-    // ... existing event listeners ...
+    // ... (keep existing event listeners) ...
 };
 
-// Add this at the end of your existing JavaScript file
-document.getElementById('toggle-auto-populate').addEventListener('click', function() {
-    const controls = document.getElementById('auto-populate-controls');
-    if (controls.style.display === 'none') {
-        controls.style.display = 'block';
-        this.textContent = 'Hide';
-    } else {
-        controls.style.display = 'none';
-        this.textContent = 'Show';
-    }
-});
+// Make sure the autoPopulateCalendar function is defined
+function autoPopulateCalendar() {
+    // ... (keep existing auto-populate logic) ...
+}
+
+// Add this event listener for the auto-populate button
+document.getElementById('auto-populate-button').addEventListener('click', autoPopulateCalendar);

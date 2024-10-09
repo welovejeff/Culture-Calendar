@@ -40,9 +40,29 @@
     
     <div class="auto-populate-dropdown">
         <h3>Auto-Populate Calendar</h3>
-        <button id="toggle-auto-populate">Show/Hide</button>
+        <button id="toggle-auto-populate">Show</button>
         <div id="auto-populate-controls" style="display: none;">
-            <!-- Auto-populate controls remain the same -->
+            <div class="control-group">
+                <label for="posts-per-week">Posts per week:</label>
+                <input type="number" id="posts-per-week" min="1" max="21" value="3">
+            </div>
+            <div class="control-group">
+                <label for="total-posts">Total posts for the month:</label>
+                <input type="number" id="total-posts" min="1" value="12">
+            </div>
+            <div class="control-group">
+                <input type="checkbox" id="allow-weekends">
+                <label for="allow-weekends">Allow weekend posts</label>
+            </div>
+            <div class="control-group">
+                <label for="distribution">Distribution:</label>
+                <select id="distribution">
+                    <option value="even">Evenly distributed</option>
+                    <option value="front-loaded">Front-loaded</option>
+                    <option value="back-loaded">Back-loaded</option>
+                </select>
+            </div>
+            <button id="auto-populate-button">Auto-Populate</button>
         </div>
     </div>
 
