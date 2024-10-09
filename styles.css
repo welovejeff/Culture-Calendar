@@ -304,3 +304,18 @@ button {
     max-height: 80vh;
     overflow-y: auto;
 }
+
+#category-filter {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#category-select {
+    width: 200px;
+    padding: 5px;
+    margin-left: 10px;
+}
+
+#category-select option {
+    padding: 5px;
+}

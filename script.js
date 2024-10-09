@@ -1,6 +1,8 @@
 let currentDate = new Date();
 let currentContent = {};
 let events = [];
+let categories = [];
+let selectedCategories = [];
 
 // Load CSV data
 function loadCSVData() {
@@ -10,6 +12,9 @@ function loadCSVData() {
             download: true,
             complete: function(results) {
                 events = results.data;
+                // Extract unique categories
+                categories = [...new Set(events.map(event => event.Category))];
+                populateCategoryFilter();
                 console.log('CSV data loaded:', events);
                 resolve();
             },
@@ -19,6 +24,25 @@ function loadCSVData() {
                 reject(error);
             }
         });
+    });
+}
+
+// Add this function to populate the category filter
+function populateCategoryFilter() {
+    const categorySelect = document.getElementById('category-select');
+    categorySelect.innerHTML = '';
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        option.selected = true; // All categories selected by default
+        categorySelect.appendChild(option);
+    });
+    selectedCategories = [...categories]; // All categories selected by default
+    
+    categorySelect.addEventListener('change', function() {
+        selectedCategories = Array.from(this.selectedOptions).map(option => option.value);
+        renderCalendar();
     });
 }
 
@@ -51,10 +75,11 @@ function renderCalendar() {
             });
         }
 
-        // Add events for this day
+        // Filter events for this day based on selected categories
         const dayEvents = events.filter(event => {
             const startDate = new Date(event['Start Date']);
-            return startDate.toDateString() === new Date(year, month, day).toDateString();
+            return startDate.toDateString() === new Date(year, month, day).toDateString() &&
+                   selectedCategories.includes(event.Category);
         });
 
         console.log(`Events for ${dateKey}:`, dayEvents); // Add this line
