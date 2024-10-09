@@ -588,3 +588,15 @@ window.onload = function() {
     
     // ... existing event listeners ...
 };
+
+// Add this at the end of your existing JavaScript file
+document.getElementById('toggle-auto-populate').addEventListener('click', function() {
+    const controls = document.getElementById('auto-populate-controls');
+    if (controls.style.display === 'none') {
+        controls.style.display = 'block';
+        this.textContent = 'Hide';
+    } else {
+        controls.style.display = 'none';
+        this.textContent = 'Show';
+    }
+});
