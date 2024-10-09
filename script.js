@@ -563,3 +563,86 @@ function autoPopulateCalendar() {
 
 // Add this event listener for the auto-populate button
 document.getElementById('auto-populate-button').addEventListener('click', autoPopulateCalendar);
+
+function createCalendar(year, month) {
+    const calendar = document.getElementById('calendar');
+    calendar.innerHTML = '';
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDay = firstDay.getDay();
+
+    for (let i = 0; i < 42; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('calendar-cell');
+
+        const dateDiv = document.createElement('div');
+        dateDiv.classList.add('calendar-date');
+
+        const eventsDiv = document.createElement('div');
+        eventsDiv.classList.add('calendar-events');
+
+        cell.appendChild(dateDiv);
+        cell.appendChild(eventsDiv);
+
+        if (i >= startingDay && i < startingDay + daysInMonth) {
+            const day = i - startingDay + 1;
+            dateDiv.textContent = day;
+            
+            const date = new Date(year, month, day);
+            const dateString = date.toISOString().split('T')[0];
+            
+            // Add content posts
+            if (contentData[dateString]) {
+                contentData[dateString].forEach(content => {
+                    const contentDiv = document.createElement('div');
+                    contentDiv.classList.add('calendar-event');
+                    contentDiv.textContent = content.platform;
+                    contentDiv.style.backgroundColor = getPlatformColor(content.platform);
+                    contentDiv.style.color = 'white';
+                    eventsDiv.appendChild(contentDiv);
+                });
+            }
+
+            // Add CSV events
+            if (csvEvents[dateString]) {
+                csvEvents[dateString].forEach(event => {
+                    const eventDiv = document.createElement('div');
+                    eventDiv.classList.add('calendar-event');
+                    eventDiv.textContent = event.category;
+                    eventDiv.style.backgroundColor = getCategoryColor(event.category);
+                    eventDiv.style.color = 'white';
+                    eventsDiv.appendChild(eventDiv);
+                });
+            }
+        }
+
+        calendar.appendChild(cell);
+    }
+}
+
+// Helper functions to get colors for platforms and categories
+function getPlatformColor(platform) {
+    const colors = {
+        facebook: '#3b5998',
+        instagram: '#e1306c',
+        twitter: '#1da1f2',
+        linkedin: '#0077b5',
+        tiktok: '#000000',
+        threads: '#000000'
+    };
+    return colors[platform.toLowerCase()] || '#999999';
+}
+
+function getCategoryColor(category) {
+    // You can define your own color scheme for categories
+    const colors = {
+        'Holiday': '#ff9999',
+        'Event': '#99ff99',
+        'Promotion': '#9999ff'
+    };
+    return colors[category] || '#cccccc';
+}
+
+// Make sure to call createCalendar() when updating the calendar
