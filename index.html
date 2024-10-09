@@ -16,7 +16,13 @@
             <input type="date" id="date-picker">
             <button id="today-button">Today</button>
         </div>
-        <!-- Add this new div for day labels -->
+        <!-- Move the category filter here, before the day labels -->
+        <div id="category-filter">
+            <label for="category-select">Filter by Category:</label>
+            <select id="category-select" multiple>
+                <!-- Options will be populated dynamically -->
+            </select>
+        </div>
         <div id="day-labels">
             <div>S</div>
             <div>M</div>
@@ -27,13 +33,6 @@
             <div>S</div>
         </div>
         <div id="calendar"></div>
-        <!-- Add this right after the #month-navigation div -->
-        <div id="category-filter">
-            <label for="category-select">Filter by Category:</label>
-            <select id="category-select" multiple>
-                <!-- Options will be populated dynamically -->
-            </select>
-        </div>
     </div>
     <div id="auto-populate-controls">
         <h3>Auto-Populate Calendar</h3>

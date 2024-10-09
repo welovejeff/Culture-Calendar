@@ -306,14 +306,18 @@ button {
 }
 
 #category-filter {
-    margin-bottom: 20px;
+    margin: 20px 0;
     text-align: center;
 }
 
 #category-select {
-    width: 200px;
-    padding: 5px;
-    margin-left: 10px;
+    width: 80%;
+    max-width: 300px;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
 #category-select option {

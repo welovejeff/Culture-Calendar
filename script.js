@@ -4,16 +4,17 @@ let events = [];
 let categories = [];
 let selectedCategories = [];
 
-// Load CSV data
+// Modify the loadCSVData function to include more logging
 function loadCSVData() {
     return new Promise((resolve, reject) => {
-        Papa.parse('events.csv', {  // Change the file name here if you renamed it
+        Papa.parse('events.csv', {
             header: true,
             download: true,
             complete: function(results) {
                 events = results.data;
                 // Extract unique categories
                 categories = [...new Set(events.map(event => event.Category))];
+                console.log('Extracted categories:', categories); // Add this line
                 populateCategoryFilter();
                 console.log('CSV data loaded:', events);
                 resolve();
@@ -27,9 +28,10 @@ function loadCSVData() {
     });
 }
 
-// Add this function to populate the category filter
+// Modify the populateCategoryFilter function
 function populateCategoryFilter() {
     const categorySelect = document.getElementById('category-select');
+    console.log('Populating category filter'); // Add this line
     categorySelect.innerHTML = '';
     categories.forEach(category => {
         const option = document.createElement('option');
@@ -40,8 +42,11 @@ function populateCategoryFilter() {
     });
     selectedCategories = [...categories]; // All categories selected by default
     
+    console.log('Category filter populated with options:', categorySelect.options.length); // Add this line
+    
     categorySelect.addEventListener('change', function() {
         selectedCategories = Array.from(this.selectedOptions).map(option => option.value);
+        console.log('Selected categories:', selectedCategories); // Add this line
         renderCalendar();
     });
 }
@@ -566,6 +571,7 @@ function openEventModal(event) {
     }
 }
 
+// Modify the window.onload function to ensure populateCategoryFilter is called
 window.onload = function() {
     loadFromLocalStorage();
     setupToolbarDragAndDrop();
