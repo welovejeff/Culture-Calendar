@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Calendar</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Content Calendar</h1>
+    <div id="calendar-container">
+        <div id="month-navigation">
+            <button id="prev-month">&lt;</button>
+            <h2 id="current-month"></h2>
+            <button id="next-month">&gt;</button>
+            <input type="date" id="date-picker">
+            <button id="today-button">Today</button>
+        </div>
+        <!-- Add this new div for day labels -->
+        <div id="day-labels">
+            <div>S</div>
+            <div>M</div>
+            <div>T</div>
+            <div>W</div>
+            <div>T</div>
+            <div>F</div>
+            <div>S</div>
+        </div>
+        <div id="calendar"></div>
+    </div>
+    <div id="auto-populate-controls">
+        <h3>Auto-Populate Calendar</h3>
+        <div class="control-group">
+            <label for="posts-per-week">Posts per week:</label>
+            <input type="number" id="posts-per-week" min="1" max="21" value="3">
+        </div>
+        <div class="control-group">
+            <label for="total-posts">Total posts for the month:</label>
+            <input type="number" id="total-posts" min="1" value="12">
+        </div>
+        <div class="control-group">
+            <input type="checkbox" id="allow-weekends">
+            <label for="allow-weekends">Allow weekend posts</label>
+        </div>
+        <div class="control-group">
+            <label for="distribution">Distribution:</label>
+            <select id="distribution">
+                <option value="even">Evenly distributed</option>
+                <option value="front-loaded">Front-loaded</option>
+                <option value="back-loaded">Back-loaded</option>
+            </select>
+        </div>
+        <button id="auto-populate-button">Auto-Populate</button>
+    </div>
+    <div id="toolbar">
+        <div class="draggable-item facebook" draggable="true">Facebook</div>
+        <div class="draggable-item instagram" draggable="true">Instagram</div>
+        <div class="draggable-item twitter" draggable="true">Twitter</div>
+        <div class="draggable-item linkedin" draggable="true">LinkedIn</div>
+        <div class="draggable-item tiktok" draggable="true">TikTok</div>
+        <div class="draggable-item threads" draggable="true">Threads</div>
+    </div>
+    <div class="reset-container">
+        <button id="reset-button">Reset Calendar</button>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Content Details</h2>
+            <form id="content-form">
+                <label for="platform">Change Platform:</label>
+                <select id="platform" required>
+                    <option value="facebook">Facebook</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="twitter">Twitter</option>
+                    <option value="linkedin">LinkedIn</option>
+                    <option value="tiktok">TikTok</option>
+                    <option value="threads">Threads</option>
+                </select>
+                <label for="content">Content:</label>
+                <textarea id="content" required placeholder="Type your content here"></textarea>
+                <label for="description">Description:</label>
+                <textarea id="description"></textarea>
+                <label for="postTime">Time to Post:</label>
+                <input type="time" id="postTime">
+                <label for="approvalStatus">Approval Status:</label>
+                <select id="approvalStatus">
+                    <option value="Draft">Draft</option>
+                    <option value="Pending">Pending Approval</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Scheduled">Scheduled</option>
+                </select>
+                <div class="button-container">
+                    <button type="submit">Save</button>
+                    <button type="button" id="delete-content">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="warning-modal" class="modal">
+        <div class="modal-content">
+            <h2>Warning</h2>
+            <p>Are you sure you want to reset the calendar? This will delete all your current content.</p>
+            <div class="button-container">
+                <button id="confirm-reset">Yes, Reset</button>
+                <button id="cancel-reset">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this new modal for event details -->
+    <div id="event-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="event-title"></h2>
+            <p><strong>Category:</strong> <span id="event-category"></span></p>
+            <p><strong>Subcategory:</strong> <span id="event-subcategory"></span></p>
+            <p><strong>Location:</strong> <span id="event-location"></span></p>
+            <p><strong>Date:</strong> <span id="event-date"></span></p>
+            <p><strong>Notes:</strong> <span id="event-notes"></span></p>
+            <p><strong>Description:</strong> <span id="event-description"></span></p>
+            <p><strong>URL:</strong> <a id="event-url" target="_blank" rel="noopener noreferrer"></a></p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

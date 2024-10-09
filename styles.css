@@ -1,0 +1,306 @@
+:root {
+    --primary-pink: #FF69B4;
+    --light-pink: #FFC0CB;
+    --primary-blue: #4169E1;
+    --light-blue: #87CEFA;
+    --dark-blue: #191970;
+    --white: #FFFFFF;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+#calendar-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#month-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    grid-auto-rows: minmax(120px, auto);
+}
+
+.day {
+    border: 1px solid #ccc;
+    min-height: 120px;
+    padding: 5px;
+    position: relative;
+    overflow: visible;
+}
+
+.day-number {
+    font-weight: bold;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+.content-placeholder {
+    position: relative;
+    padding: 8px 25px 8px 8px;
+    background-color: #f0f0f0;
+    border: 1px solid #999;
+    border-radius: 5px;
+    margin: 4px 0;
+    cursor: move;
+    font-size: 14px;
+    line-height: 1.3;
+    min-height: 30px;
+}
+
+.content-preview {
+    display: block;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 2.6em;
+}
+
+.remove-placeholder {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 18px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label, input, select, textarea {
+    margin-bottom: 10px;
+}
+
+button {
+    cursor: pointer;
+}
+
+#auto-populate-controls {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#auto-populate-controls h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.control-group {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.control-group label {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.control-group input[type="number"],
+.control-group select {
+    width: 100px;
+}
+
+#auto-populate-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#auto-populate-button:hover {
+    background-color: #45a049;
+}
+
+#toolbar {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.draggable-item {
+    padding: 10px;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: move;
+}
+
+#day-labels {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+#day-labels div {
+    text-align: center;
+    font-weight: bold;
+    padding: 5px 0;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.current-day {
+    background-color: #e6f3ff;
+    border: 2px solid #4a90e2;
+}
+
+.content-placeholder.auto-populated {
+    background-color: #d3d3d3;
+    color: #333;
+}
+
+.facebook { background-color: #3b5998; color: white; }
+.instagram { background-color: #e1306c; color: white; }
+.twitter { background-color: #1da1f2; color: white; }
+.linkedin { background-color: #0077b5; color: white; }
+.tiktok { background-color: #000000; color: white; }
+.threads { background-color: #000000; color: white; }
+
+.reset-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#reset-button {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#reset-button:hover {
+    background-color: #d32f2f;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+#confirm-reset, #cancel-reset {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#confirm-reset {
+    background-color: #f44336;
+    color: white;
+}
+
+#confirm-reset:hover {
+    background-color: #d32f2f;
+}
+
+#cancel-reset {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#cancel-reset:hover {
+    background-color: #45a049;
+}
+
+/* ... existing styles ... */
+
+.events-container {
+    margin-top: 5px;
+    font-size: 10px;
+    max-height: 40px;
+    overflow-y: auto;
+}
+
+.event {
+    background-color: #f0f0f0;
+    padding: 2px 4px;
+    margin-bottom: 2px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.event:hover {
+    background-color: #e0e0e0;
+}
+
+/* Adjust the existing modal styles to accommodate the new event modal */
+.modal-content {
+    max-height: 80vh;
+    overflow-y: auto;
+}
