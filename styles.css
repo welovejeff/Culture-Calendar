@@ -361,4 +361,25 @@ body {
     margin: 0;
 }
 
+/* Add or modify these styles */
+.main-container {
+    display: flex;
+    gap: 20px;
+}
+
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+#calendar-container {
+    flex-grow: 1;
+}
+
+.auto-populate-dropdown {
+    margin-top: 20px;
+}
+
+/* Remove styles related to .draggable-item and #toolbar */
+
 /* ... rest of the CSS remains unchanged ... */

@@ -106,10 +106,10 @@ function renderCalendar() {
     }
 
     setupDragAndDrop();
-    setupToolbarDragAndDrop();
     updateDatePicker();
 }
 
+// Modify the createDayElement function to allow adding content on click
 function createDayElement(day) {
     const dayElement = document.createElement('div');
     dayElement.className = 'day';
@@ -123,6 +123,9 @@ function createDayElement(day) {
     }
     
     dayElement.innerHTML = `<div class="day-number">${day}</div>`;
+
+    // Add click event to add content
+    dayElement.addEventListener('click', () => openModal(null, dayElement));
 
     return dayElement;
 }
@@ -183,20 +186,6 @@ function setupDragAndDrop() {
     });
 }
 
-function setupToolbarDragAndDrop() {
-    const draggableItems = document.querySelectorAll('.draggable-item');
-    const dropZones = document.querySelectorAll('.day');
-
-    draggableItems.forEach(item => {
-        item.addEventListener('dragstart', toolbarDragStart);
-    });
-
-    dropZones.forEach(dropZone => {
-        dropZone.addEventListener('dragover', dragOver);
-        dropZone.addEventListener('drop', toolbarDrop);
-    });
-}
-
 function dragStart(e) {
     e.dataTransfer.setData('text/plain', JSON.stringify({
         outerHTML: e.target.outerHTML,
@@ -235,7 +224,8 @@ function drop(e) {
     updateContentData();
 }
 
-function openModal(content = null) {
+// Modify the openModal function to handle creating new content
+function openModal(content = null, dayElement = null) {
     const modal = document.getElementById('modal');
     const form = document.getElementById('content-form');
     const platformSelect = document.getElementById('platform');
@@ -262,7 +252,7 @@ function openModal(content = null) {
     form.onsubmit = (e) => {
         e.preventDefault();
         const newContent = {
-            platform: platformSelect.value || 'auto-populated', // Use 'auto-populated' if no platform is selected
+            platform: platformSelect.value,
             content: contentTextarea.value,
             description: descriptionTextarea.value,
             postTime: postTimeInput.value,
@@ -290,14 +280,15 @@ function openModal(content = null) {
                 // Update the class for styling
                 placeholder.className = `content-placeholder ${newContent.platform}`;
             }
-        } else {
+        } else if (dayElement) {
             // Add new content
-            const day = document.querySelector('.day:not(:empty)');
-            const dateKey = getDateKeyFromDay(day);
+            const dateKey = getDateKeyFromDay(dayElement);
             if (!currentContent[dateKey]) {
                 currentContent[dateKey] = [];
             }
             currentContent[dateKey].push(newContent);
+            const placeholder = createPlaceholder(newContent);
+            dayElement.appendChild(placeholder);
         }
 
         updateContentData();
@@ -315,44 +306,6 @@ function openModal(content = null) {
         modal.style.display = 'none';
         renderCalendar();
     };
-}
-
-function toolbarDragStart(e) {
-    e.dataTransfer.setData('text/plain', e.target.classList[1]); // Store only the platform name
-}
-
-function toolbarDrop(e) {
-    e.preventDefault();
-    const platform = getRandomPlatform();
-    const dayElement = e.target.closest('.day');
-    
-    if (!dayElement) return; // Ensure we're dropping on a day element
-    
-    const dateKey = getDateKeyFromDay(dayElement);
-    
-    // Check if a placeholder for this platform already exists on this day
-    const existingPlaceholder = dayElement.querySelector(`.content-placeholder.${platform}`);
-    if (existingPlaceholder) {
-        return; // If it exists, do nothing
-    }
-    
-    const newContent = {
-        platform: platform,
-        content: '',
-        description: '',
-        postTime: '',
-        approvalStatus: 'Draft'
-    };
-    
-    const placeholder = createPlaceholder(newContent);
-    dayElement.appendChild(placeholder);
-    
-    if (!currentContent[dateKey]) {
-        currentContent[dateKey] = [];
-    }
-    currentContent[dateKey].push(newContent);
-    
-    updateContentData();
 }
 
 function getDateKeyFromDay(day) {
@@ -429,7 +382,6 @@ window.addEventListener('click', (e) => {
 
 loadFromLocalStorage();
 renderCalendar();
-setupToolbarDragAndDrop();
 
 const datePicker = document.getElementById('date-picker');
 datePicker.addEventListener('change', (e) => {
@@ -574,16 +526,14 @@ function openEventModal(event) {
 // Modify the window.onload function to ensure populateCategoryFilter is called
 window.onload = function() {
     loadFromLocalStorage();
-    setupToolbarDragAndDrop();
     
-    // Load CSV data and render calendar after data is loaded
     loadCSVData().then(() => {
         console.log('CSV data loaded, rendering calendar');
         renderCalendar();
     }).catch(error => {
         console.error('Failed to load CSV data:', error);
         alert('Failed to load CSV data. The calendar will render without events.');
-        renderCalendar(); // Render calendar even if CSV loading fails
+        renderCalendar();
     });
     
     // ... existing event listeners ...
