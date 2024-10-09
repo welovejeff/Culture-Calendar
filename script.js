@@ -54,58 +54,8 @@ function populateCategoryFilter() {
 function renderCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-
     document.getElementById('current-month').textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
-
-    const calendar = document.getElementById('calendar');
-    calendar.innerHTML = '';
-
-    for (let i = 0; i < firstDay.getDay(); i++) {
-        calendar.appendChild(createDayElement(''));
-    }
-
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dayElement = createDayElement(day);
-        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        
-        console.log(`Rendering day ${day}, dateKey: ${dateKey}`);
-
-        if (currentContent[dateKey] && currentContent[dateKey].length > 0) {
-            currentContent[dateKey].forEach(content => {
-                const placeholder = createPlaceholder(content);
-                dayElement.appendChild(placeholder);
-            });
-        }
-
-        // Filter events for this day based on selected categories
-        const dayEvents = events.filter(event => {
-            const startDate = new Date(event['Start Date']);
-            return startDate.toDateString() === new Date(year, month, day).toDateString() &&
-                   selectedCategories.includes(event.Category);
-        });
-
-        console.log(`Events for ${dateKey}:`, dayEvents); // Add this line
-
-        if (dayEvents.length > 0) {
-            const eventsContainer = document.createElement('div');
-            eventsContainer.className = 'events-container';
-            dayEvents.forEach(event => {
-                const eventElement = document.createElement('div');
-                eventElement.className = 'event';
-                eventElement.textContent = event.Subject;
-                eventElement.addEventListener('click', () => openEventModal(event));
-                eventsContainer.appendChild(eventElement);
-            });
-            dayElement.appendChild(eventsContainer);
-        }
-
-        calendar.appendChild(dayElement);
-    }
-
-    setupDragAndDrop();
+    createCalendar(year, month);
     updateDatePicker();
 }
 
@@ -446,7 +396,7 @@ function autoPopulateCalendar() {
 
     // Clear existing content for the current month
     for (let day = 1; day <= daysInMonth; day++) {
-        const dateKey = `${year}-${month + 1}-${day}`;
+        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         if (currentContent[dateKey]) {
             delete currentContent[dateKey];
         }
@@ -454,12 +404,12 @@ function autoPopulateCalendar() {
 
     // Add new placeholders
     postDays.forEach(day => {
-        const dateKey = `${year}-${month + 1}-${day}`;
+        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         if (!currentContent[dateKey]) {
             currentContent[dateKey] = [];
         }
         const newContent = {
-            platform: 'auto-populated', // Use 'auto-populated' instead of a specific platform
+            platform: getRandomPlatform(),
             content: 'New auto-generated content',
             description: '',
             postTime: '',
@@ -472,7 +422,7 @@ function autoPopulateCalendar() {
     console.log("Final currentContent:", currentContent);
 
     updateContentData();
-    renderCalendar();
+    createCalendar(year, month);
     console.log("Auto-populate completed");
 }
 
@@ -580,10 +530,14 @@ function createCalendar(year, month) {
         const dateDiv = document.createElement('div');
         dateDiv.classList.add('calendar-date');
 
+        const contentDiv = document.createElement('div');
+        contentDiv.classList.add('calendar-content');
+
         const eventsDiv = document.createElement('div');
         eventsDiv.classList.add('calendar-events');
 
         cell.appendChild(dateDiv);
+        cell.appendChild(contentDiv);
         cell.appendChild(eventsDiv);
 
         if (i >= startingDay && i < startingDay + daysInMonth) {
@@ -594,32 +548,47 @@ function createCalendar(year, month) {
             const dateString = date.toISOString().split('T')[0];
             
             // Add content posts
-            if (contentData[dateString]) {
-                contentData[dateString].forEach(content => {
-                    const contentDiv = document.createElement('div');
-                    contentDiv.classList.add('calendar-event');
-                    contentDiv.textContent = content.platform;
-                    contentDiv.style.backgroundColor = getPlatformColor(content.platform);
-                    contentDiv.style.color = 'white';
-                    eventsDiv.appendChild(contentDiv);
+            if (currentContent[dateString]) {
+                currentContent[dateString].forEach(content => {
+                    const placeholder = createPlaceholder(content);
+                    contentDiv.appendChild(placeholder);
                 });
             }
 
             // Add CSV events
-            if (csvEvents[dateString]) {
-                csvEvents[dateString].forEach(event => {
-                    const eventDiv = document.createElement('div');
-                    eventDiv.classList.add('calendar-event');
-                    eventDiv.textContent = event.category;
-                    eventDiv.style.backgroundColor = getCategoryColor(event.category);
-                    eventDiv.style.color = 'white';
-                    eventsDiv.appendChild(eventDiv);
+            if (events.length > 0) {
+                const dayEvents = events.filter(event => {
+                    const eventDate = new Date(event['Start Date']);
+                    return eventDate.toDateString() === date.toDateString() &&
+                           selectedCategories.includes(event.Category);
+                });
+
+                dayEvents.forEach(event => {
+                    const eventElement = document.createElement('div');
+                    eventElement.className = 'calendar-event';
+                    eventElement.textContent = event.Subject;
+                    eventElement.style.backgroundColor = getCategoryColor(event.Category);
+                    eventElement.style.color = 'white';
+                    eventElement.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openEventModal(event);
+                    });
+                    eventsDiv.appendChild(eventElement);
                 });
             }
+
+            // Add click event to add content
+            cell.addEventListener('click', (e) => {
+                if (e.target === cell || e.target === dateDiv || e.target === contentDiv) {
+                    openModal(null, cell);
+                }
+            });
         }
 
         calendar.appendChild(cell);
     }
+
+    setupDragAndDrop();
 }
 
 // Helper functions to get colors for platforms and categories
