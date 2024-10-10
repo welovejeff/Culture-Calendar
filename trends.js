@@ -22,31 +22,43 @@ document.addEventListener('DOMContentLoaded', () => {
                     try {
                         const title = item.querySelector('title')?.textContent || 'No Title';
                         const description = item.querySelector('description')?.textContent || 'No Description';
-                        const link = item.querySelector('link')?.textContent || '#';
                         const pubDate = item.querySelector('pubDate')?.textContent 
                             ? new Date(item.querySelector('pubDate').textContent).toLocaleString()
                             : 'Unknown Date';
                         
-                        // Extract image URL from news_item_url or ht:picture if available
-                        let imageUrl = '';
-                        const newsItemUrl = item.querySelector('ht\\:news_item_url')?.textContent;
-                        const htPicture = item.querySelector('ht\\:picture')?.textContent;
-                        
-                        if (newsItemUrl) {
-                            imageUrl = newsItemUrl.replace('/url?q=', '').split('&')[0];
-                        } else if (htPicture) {
-                            imageUrl = htPicture;
-                        }
+                        const newsItems = item.querySelectorAll('ht\\:news_item');
+                        let newsItemsHtml = '';
+
+                        newsItems.forEach(newsItem => {
+                            const newsItemTitle = newsItem.querySelector('ht\\:news_item_title')?.textContent || 'No Title';
+                            const newsItemSource = newsItem.querySelector('ht\\:news_item_source')?.textContent || 'Unknown Source';
+                            const newsItemLink = newsItem.querySelector('ht\\:news_item_url')?.textContent || '#';
+                            const newsItemPicture = newsItem.querySelector('ht\\:picture')?.textContent || '';
+
+                            newsItemsHtml += `
+                                <div class="news-item">
+                                    ${newsItemPicture ? `<img src="${newsItemPicture}" alt="${newsItemTitle}" class="news-image" onerror="this.style.display='none'">` : ''}
+                                    <h3>${newsItemTitle}</h3>
+                                    <p>${newsItemSource}</p>
+                                    <a href="${newsItemLink}" target="_blank">Read article</a>
+                                </div>
+                            `;
+                        });
+
+                        const googleTrendsLink = `https://trends.google.com/trends/explore?q=${encodeURIComponent(title)}&date=now%201-d&geo=US&hl=en-US`;
 
                         const trendItem = document.createElement('div');
                         trendItem.className = 'trend-item';
                         trendItem.innerHTML = `
-                            ${imageUrl ? `<img src="${imageUrl}" alt="${title}" class="trend-image" onerror="this.style.display='none'">` : ''}
                             <div class="trend-content">
                                 <h2>${title}</h2>
                                 <p>${description}</p>
                                 <p>Published: ${pubDate}</p>
+                                <a href="${googleTrendsLink}" target="_blank" class="google-trends-link">View on Google Trends</a>
                                 <button class="read-more" data-title="${title}">Read more</button>
+                            </div>
+                            <div class="news-items">
+                                ${newsItemsHtml}
                             </div>
                         `;
                         trendsContainer.appendChild(trendItem);

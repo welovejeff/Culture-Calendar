@@ -980,47 +980,70 @@ body {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.trend-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
+    margin-bottom: 20px;
 }
 
 .trend-content {
     padding: 15px;
 }
 
-.trend-item h2 {
-    margin-top: 0;
-    font-size: 18px;
-    color: #333;
+.news-items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 15px;
 }
 
-.trend-item p {
-    font-size: 14px;
-    color: #666;
+.news-item {
+    flex-basis: calc(33.333% - 10px);
+    margin-bottom: 15px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.news-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
     margin-bottom: 10px;
 }
 
-.trend-item a {
+.news-item h3 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.news-item p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.news-item a, .google-trends-link {
     display: inline-block;
     background-color: #4CAF50;
     color: white;
-    padding: 8px 12px;
+    padding: 5px 10px;
     text-decoration: none;
     border-radius: 4px;
     font-size: 14px;
     transition: background-color 0.3s;
 }
 
-.trend-item a:hover {
+.news-item a:hover, .google-trends-link:hover {
     background-color: #45a049;
 }
 
+.google-trends-link {
+    margin-right: 10px;
+}
+
 @media (max-width: 768px) {
-    #trends-container {
-        grid-template-columns: 1fr;
+    .news-item {
+        flex-basis: 100%;
     }
 }
