@@ -5,133 +5,148 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Content Calendar</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <h1>Content Calendar</h1>
-    <div class="main-container">
-        <div class="sidebar">
-            <div id="category-filter">
-                <h3>Filter by Category:</h3>
-                <select id="category-select" multiple>
-                    <!-- Options will be populated dynamically -->
-                </select>
-            </div>
-        </div>
-        <div id="calendar-container">
-            <div id="month-navigation">
-                <button id="prev-month">&lt;</button>
-                <h2 id="current-month"></h2>
-                <button id="next-month">&gt;</button>
-                <input type="date" id="date-picker">
-                <button id="today-button">Today</button>
-            </div>
-            <div id="day-labels">
-                <div>S</div>
-                <div>M</div>
-                <div>T</div>
-                <div>W</div>
-                <div>T</div>
-                <div>F</div>
-                <div>S</div>
-            </div>
-            <div id="calendar" class="calendar-grid"></div>
-        </div>
-    </div>
-    
-    <div class="auto-populate-dropdown">
-        <h3>Auto-Populate Calendar</h3>
-        <button id="toggle-auto-populate">Show</button>
-        <div id="auto-populate-controls" style="display: none;">
-            <div class="control-group">
-                <label for="posts-per-week">Posts per week:</label>
-                <input type="number" id="posts-per-week" min="1" max="21" value="3">
-            </div>
-            <div class="control-group">
-                <label for="total-posts">Total posts for the month:</label>
-                <input type="number" id="total-posts" min="1" value="12">
-            </div>
-            <div class="control-group">
-                <input type="checkbox" id="allow-weekends">
-                <label for="allow-weekends">Allow weekend posts</label>
-            </div>
-            <div class="control-group">
-                <label for="distribution">Distribution:</label>
-                <select id="distribution">
-                    <option value="even">Evenly distributed</option>
-                    <option value="front-loaded">Front-loaded</option>
-                    <option value="back-loaded">Back-loaded</option>
-                </select>
-            </div>
-            <button id="auto-populate-button">Auto-Populate</button>
-        </div>
-    </div>
-
-    <div class="reset-container">
-        <button id="reset-button">Reset Calendar</button>
-    </div>
-
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Content Details</h2>
-            <form id="content-form">
-                <label for="platform">Change Platform:</label>
-                <select id="platform" required>
-                    <option value="facebook">Facebook</option>
-                    <option value="instagram">Instagram</option>
-                    <option value="twitter">Twitter</option>
-                    <option value="linkedin">LinkedIn</option>
-                    <option value="tiktok">TikTok</option>
-                    <option value="threads">Threads</option>
-                </select>
-                <label for="content">Content:</label>
-                <textarea id="content" required placeholder="Type your content here"></textarea>
-                <label for="description">Description:</label>
-                <textarea id="description"></textarea>
-                <label for="postTime">Time to Post:</label>
-                <input type="time" id="postTime">
-                <label for="approvalStatus">Approval Status:</label>
-                <select id="approvalStatus">
-                    <option value="Draft">Draft</option>
-                    <option value="Pending">Pending Approval</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Scheduled">Scheduled</option>
-                </select>
-                <div class="button-container">
-                    <button type="submit">Save</button>
-                    <button type="button" id="delete-content">Delete</button>
+    <nav class="sidebar-nav">
+        <a href="index.html" class="active"><i class="fas fa-calendar"></i></a>
+        <a href="trends.html"><i class="fas fa-fire"></i></a>
+    </nav>
+    <div class="content-wrapper">
+        <h1>Content Calendar</h1>
+        <div class="main-container">
+            <div id="calendar-container">
+                <div id="month-navigation">
+                    <button id="prev-month">&lt;</button>
+                    <h2 id="current-month"></h2>
+                    <button id="next-month">&gt;</button>
+                    <input type="date" id="date-picker">
+                    <button id="today-button">Today</button>
                 </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="warning-modal" class="modal">
-        <div class="modal-content">
-            <h2>Warning</h2>
-            <p>Are you sure you want to reset the calendar? This will delete all your current content.</p>
-            <div class="button-container">
-                <button id="confirm-reset">Yes, Reset</button>
-                <button id="cancel-reset">Cancel</button>
+                <div id="view-toggle">
+                    <button id="month-view" class="active">Month</button>
+                    <button id="week-view">Week</button>
+                </div>
+                <div id="calendar" class="calendar-grid"></div>
+                <div id="week-navigation" class="week-navigation" style="display: none;">
+                    <button id="prev-week">&lt; Previous Week</button>
+                    <span id="week-range"></span>
+                    <button id="next-week">Next Week &gt;</button>
+                </div>
+            </div>
+            <div class="sidebar">
+                <div id="category-filter">
+                    <h3>Filter by Category</h3>
+                    <div class="filter-search">
+                        <input type="text" id="category-search" placeholder="Search categories...">
+                    </div>
+                    <div class="filter-options">
+                        <label class="select-all">
+                            <input type="checkbox" id="select-all-categories" checked>
+                            <span>Select All</span>
+                        </label>
+                        <span id="selected-count"></span>
+                    </div>
+                    <div id="category-list" class="category-list">
+                        <!-- Categories will be populated dynamically -->
+                    </div>
+                </div>
+                <div class="auto-populate-dropdown">
+                    <h3>Auto-Populate Calendar</h3>
+                    <button id="toggle-auto-populate">Show</button>
+                    <div id="auto-populate-controls" style="display: none;">
+                        <div class="control-group">
+                            <label for="posts-per-week">Posts per week:</label>
+                            <input type="number" id="posts-per-week" min="1" max="21" value="3">
+                        </div>
+                        <div class="control-group">
+                            <label for="total-posts">Total posts for the month:</label>
+                            <input type="number" id="total-posts" min="1" value="12">
+                        </div>
+                        <div class="control-group">
+                            <input type="checkbox" id="allow-weekends">
+                            <label for="allow-weekends">Allow weekend posts</label>
+                        </div>
+                        <div class="control-group">
+                            <label for="distribution">Distribution:</label>
+                            <select id="distribution">
+                                <option value="even">Evenly distributed</option>
+                                <option value="front-loaded">Front-loaded</option>
+                                <option value="back-loaded">Back-loaded</option>
+                            </select>
+                        </div>
+                        <button id="auto-populate-button">Auto-Populate</button>
+                    </div>
+                </div>
+                <div class="reset-container">
+                    <button id="reset-button">Reset Calendar</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Add this new modal for event details -->
-    <div id="event-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="event-title"></h2>
-            <p><strong>Category:</strong> <span id="event-category"></span></p>
-            <p><strong>Subcategory:</strong> <span id="event-subcategory"></span></p>
-            <p><strong>Location:</strong> <span id="event-location"></span></p>
-            <p><strong>Date:</strong> <span id="event-date"></span></p>
-            <p><strong>Notes:</strong> <span id="event-notes"></span></p>
-            <p><strong>Description:</strong> <span id="event-description"></span></p>
-            <p><strong>URL:</strong> <a id="event-url" target="_blank" rel="noopener noreferrer"></a></p>
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Content Details</h2>
+                <form id="content-form">
+                    <label for="platform">Platform:</label>
+                    <select id="platform" required>
+                        <option value="facebook">Facebook</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="threads">Threads</option>
+                    </select>
+                    <label for="content">Content:</label>
+                    <textarea id="content" required></textarea>
+                    <label for="description">Description:</label>
+                    <textarea id="description"></textarea>
+                    <label for="postTime">Time to Post:</label>
+                    <input type="time" id="postTime">
+                    <label for="approvalStatus">Approval Status:</label>
+                    <select id="approvalStatus">
+                        <option value="Draft">Draft</option>
+                        <option value="Pending">Pending Approval</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Scheduled">Scheduled</option>
+                    </select>
+                    <div class="button-container">
+                        <button type="submit">Save</button>
+                        <button type="button" id="delete-content">Delete</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <script src="script.js"></script>
+        <div id="warning-modal" class="modal">
+            <div class="modal-content">
+                <h2>Warning</h2>
+                <p>Are you sure you want to reset the calendar? This will delete all your current content.</p>
+                <div class="button-container">
+                    <button id="confirm-reset">Yes, Reset</button>
+                    <button id="cancel-reset">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add this new modal for event details -->
+        <div id="event-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="event-title"></h2>
+                <p><strong>Category:</strong> <span id="event-category"></span></p>
+                <p><strong>Subcategory:</strong> <span id="event-subcategory"></span></p>
+                <p><strong>Location:</strong> <span id="event-location"></span></p>
+                <p><strong>Date:</strong> <span id="event-date"></span></p>
+                <p><strong>Notes:</strong> <span id="event-notes"></span></p>
+                <p><strong>Description:</strong> <span id="event-description"></span></p>
+                <p><strong>URL:</strong> <a id="event-url" target="_blank" rel="noopener noreferrer"></a></p>
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+        <script src="script.js"></script>
+    </div>
 </body>
 </html>

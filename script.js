@@ -1,62 +1,174 @@
 let currentDate = new Date();
+let currentYear = currentDate.getFullYear();
+let currentMonth = currentDate.getMonth();
 let currentContent = {};
 let events = [];
 let categories = [];
 let selectedCategories = [];
+let calendarData = [];
 
 // Modify the loadCSVData function to include more logging
 function loadCSVData() {
     return new Promise((resolve, reject) => {
+        if (typeof Papa === 'undefined') {
+            console.error('PapaParse is not loaded');
+            reject(new Error('PapaParse is not loaded'));
+            return;
+        }
+
         Papa.parse('events.csv', {
             header: true,
             download: true,
             complete: function(results) {
                 events = results.data;
                 // Extract unique categories
-                categories = [...new Set(events.map(event => event.Category))];
-                console.log('Extracted categories:', categories); // Add this line
+                categories = [...new Set(events.map(event => event.Category))].sort();
+                console.log('Extracted categories:', categories);
                 populateCategoryFilter();
                 console.log('CSV data loaded:', events);
-                resolve();
+                resolve(events);
             },
             error: function(error) {
                 console.error('Error loading CSV data:', error);
-                alert('Failed to load CSV data. Please check the console for more information.');
                 reject(error);
             }
         });
     });
 }
 
-// Modify the populateCategoryFilter function
+// Replace the existing populateCategoryFilter function with this improved version
 function populateCategoryFilter() {
-    const categorySelect = document.getElementById('category-select');
-    console.log('Populating category filter');
-    categorySelect.innerHTML = '';
-    categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        option.selected = true; // All categories selected by default
-        categorySelect.appendChild(option);
-    });
+    const categoryList = document.getElementById('category-list');
+    const selectAllCheckbox = document.getElementById('select-all-categories');
+    const selectedCountSpan = document.getElementById('selected-count');
+    const searchInput = document.getElementById('category-search');
+
+    categoryList.innerHTML = '';
     selectedCategories = [...categories]; // All categories selected by default
-    
-    console.log('Category filter populated with options:', categorySelect.options.length);
-    
-    categorySelect.addEventListener('change', function() {
-        selectedCategories = Array.from(this.selectedOptions).map(option => option.value);
-        console.log('Selected categories:', selectedCategories);
-        renderCalendar();
+
+    categories.forEach(category => {
+        const categoryItem = document.createElement('div');
+        categoryItem.className = 'category-item';
+        categoryItem.innerHTML = `
+            <label>
+                <input type="checkbox" value="${category}" checked>
+                <span>${category}</span>
+            </label>
+        `;
+        categoryList.appendChild(categoryItem);
     });
+
+    updateSelectedCount();
+
+    // Event listener for individual category checkboxes
+    categoryList.addEventListener('change', (e) => {
+        if (e.target.type === 'checkbox') {
+            if (e.target.checked) {
+                selectedCategories.push(e.target.value);
+            } else {
+                selectedCategories = selectedCategories.filter(cat => cat !== e.target.value);
+            }
+            updateSelectedCount();
+            selectAllCheckbox.checked = selectedCategories.length === categories.length;
+            renderCalendar(currentYear, currentMonth);
+        }
+    });
+
+    // Event listener for "Select All" checkbox
+    selectAllCheckbox.addEventListener('change', () => {
+        const checkboxes = categoryList.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+        selectedCategories = selectAllCheckbox.checked ? [...categories] : [];
+        updateSelectedCount();
+        renderCalendar(currentYear, currentMonth);
+    });
+
+    // Event listener for search input
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const categoryItems = categoryList.querySelectorAll('.category-item');
+        categoryItems.forEach(item => {
+            const categoryName = item.textContent.toLowerCase();
+            item.style.display = categoryName.includes(searchTerm) ? 'block' : 'none';
+        });
+    });
+
+    function updateSelectedCount() {
+        selectedCountSpan.textContent = `${selectedCategories.length} of ${categories.length} selected`;
+    }
 }
 
-function renderCalendar() {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    document.getElementById('current-month').textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
-    createCalendar(year, month);
-    updateDatePicker();
+function renderCalendar(year, month) {
+    console.log("Rendering calendar for:", year, month);
+    const calendarEl = document.getElementById('calendar');
+    
+    if (!calendarEl) {
+        console.error("Calendar element not found");
+        return;
+    }
+
+    calendarEl.innerHTML = ''; // Clear the calendar
+
+    if (document.getElementById('week-view').classList.contains('active')) {
+        renderWeekView(new Date(year, month, 1));
+    } else {
+        calendarEl.classList.remove('week-view');
+        createCalendar(year, month);
+        updateCalendarWithContent();
+        updateCalendarWithEvents();
+    }
+    console.log("Calendar render complete");
+}
+
+function createCalendar(year, month) {
+    console.log("Creating month calendar for", year, month);
+    const calendar = document.getElementById('calendar');
+    const weekNavigationEl = document.getElementById('week-navigation');
+    calendar.classList.remove('week-view');
+    calendar.classList.add('month-view');
+    weekNavigationEl.style.display = 'none';
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDay = firstDay.getDay();
+
+    console.log("Days in month:", daysInMonth, "Starting day:", startingDay);
+
+    // Create calendar cells
+    for (let i = 0; i < 42; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('calendar-cell');
+
+        if (i >= startingDay && i < startingDay + daysInMonth) {
+            const day = i - startingDay + 1;
+            cell.textContent = day;
+            
+            const date = new Date(year, month, day);
+            const dateString = date.toISOString().split('T')[0];
+            cell.setAttribute('data-date', dateString);
+
+            if (date.toDateString() === new Date().toDateString()) {
+                cell.classList.add('current-day');
+            }
+
+            // Add click event to open modal for adding content
+            cell.addEventListener('click', (e) => {
+                console.log('Cell clicked:', dateString);
+                if (e.target === cell) {
+                    openModal(null, cell);
+                }
+            });
+        } else {
+            cell.classList.add('empty-cell');
+        }
+
+        calendar.appendChild(cell);
+    }
+
+    console.log("Month calendar created");
 }
 
 // Modify the createDayElement function to allow adding content on click
@@ -84,11 +196,11 @@ function createPlaceholder(content) {
     const placeholder = document.createElement('div');
     placeholder.className = `content-placeholder ${content.platform}`;
     
-    // Get the first 10 words of the content (or fewer if there aren't 10)
     const contentPreview = content.content ? content.content.split(' ').slice(0, 10).join(' ') : 'New content';
     const truncatedContent = contentPreview.length > 50 ? contentPreview.substring(0, 50) + '...' : contentPreview;
     
     placeholder.innerHTML = `
+        <span class="platform-icon">${getPlatformIcon(content.platform)}</span>
         <span class="content-preview">${truncatedContent}</span>
         <button class="remove-placeholder">&times;</button>
     `;
@@ -114,10 +226,26 @@ function createPlaceholder(content) {
     return placeholder;
 }
 
+function getPlatformIcon(platform) {
+    const icons = {
+        facebook: '📘',
+        instagram: '📷',
+        twitter: '🐦',
+        linkedin: '💼',
+        tiktok: '🎵',
+        threads: '🧵'
+    };
+    return icons[platform.toLowerCase()] || '📱';
+}
+
 function removePlaceholder(placeholder, content) {
-    const dayElement = placeholder.closest('.day');
-    const dateKey = getDateKeyFromDay(dayElement);
-    currentContent[dateKey] = currentContent[dateKey].filter(c => c !== content);
+    const dayElement = placeholder.closest('.day') || placeholder.closest('.calendar-cell');
+    if (dayElement) {
+        const dateKey = dayElement.getAttribute('data-date');
+        if (dateKey && currentContent[dateKey]) {
+            currentContent[dateKey] = currentContent[dateKey].filter(c => c !== content);
+        }
+    }
     placeholder.remove();
     updateContentData();
 }
@@ -174,8 +302,8 @@ function drop(e) {
     updateContentData();
 }
 
-// Modify the openModal function to handle creating new content
-function openModal(content = null, dayElement = null) {
+function openModal(content = null, cell = null) {
+    console.log('Opening modal:', content, cell);
     const modal = document.getElementById('modal');
     const form = document.getElementById('content-form');
     const platformSelect = document.getElementById('platform');
@@ -185,14 +313,19 @@ function openModal(content = null, dayElement = null) {
     const approvalStatusSelect = document.getElementById('approvalStatus');
     const deleteButton = document.getElementById('delete-content');
 
+    let editingContentId = null;
+
     if (content) {
-        platformSelect.value = content.platform === 'auto-populated' ? '' : content.platform;
+        // Editing existing content
+        editingContentId = content.id;
+        platformSelect.value = content.platform;
         contentTextarea.value = content.content;
         descriptionTextarea.value = content.description || '';
         postTimeInput.value = content.postTime || '';
         approvalStatusSelect.value = content.approvalStatus || 'Draft';
         deleteButton.style.display = 'block';
     } else {
+        // Adding new content
         form.reset();
         deleteButton.style.display = 'none';
     }
@@ -201,7 +334,10 @@ function openModal(content = null, dayElement = null) {
 
     form.onsubmit = (e) => {
         e.preventDefault();
+        console.log('Form submitted');
         const newContent = {
+            id: editingContentId || Date.now().toString(),
+            date: cell ? cell.getAttribute('data-date') : content.date,
             platform: platformSelect.value,
             content: contentTextarea.value,
             description: descriptionTextarea.value,
@@ -209,59 +345,45 @@ function openModal(content = null, dayElement = null) {
             approvalStatus: approvalStatusSelect.value
         };
 
-        if (content) {
+        if (editingContentId) {
             // Update existing content
-            Object.assign(content, newContent);
-            const placeholder = document.querySelector(`.content-placeholder[data-platform="${content.platform}"]`);
-            if (placeholder) {
-                const contentPreview = newContent.content ? newContent.content.split(' ').slice(0, 3).join(' ') : 'New content';
-                const truncatedContent = contentPreview.length > 20 ? contentPreview.substring(0, 20) + '...' : contentPreview;
-                
-                placeholder.dataset.platform = newContent.platform;
-                placeholder.dataset.content = newContent.content;
-                placeholder.dataset.description = newContent.description;
-                placeholder.dataset.postTime = newContent.postTime;
-                placeholder.dataset.approvalStatus = newContent.approvalStatus;
-                placeholder.innerHTML = `
-                    <span class="content-preview">${truncatedContent}</span>
-                    <button class="remove-placeholder">&times;</button>
-                `;
-                
-                // Update the class for styling
-                placeholder.className = `content-placeholder ${newContent.platform}`;
+            const index = calendarData.findIndex(item => item.id === editingContentId);
+            if (index !== -1) {
+                calendarData[index] = newContent;
             }
-        } else if (dayElement) {
+        } else {
             // Add new content
-            const dateKey = getDateKeyFromDay(dayElement);
-            if (!currentContent[dateKey]) {
-                currentContent[dateKey] = [];
-            }
-            currentContent[dateKey].push(newContent);
-            const placeholder = createPlaceholder(newContent);
-            dayElement.appendChild(placeholder);
+            calendarData.push(newContent);
         }
 
-        updateContentData();
-        renderCalendar();
-        modal.style.display = 'none';
+        localStorage.setItem('calendarData', JSON.stringify(calendarData));
+        closeModal();
+        renderCalendar(currentYear, currentMonth);
     };
 
     deleteButton.onclick = () => {
-        if (content) {
-            const placeholder = document.querySelector(`.content-placeholder.${content.platform}`);
-            if (placeholder) {
-                removePlaceholder(placeholder, content);
-            }
+        console.log('Delete button clicked');
+        if (editingContentId) {
+            calendarData = calendarData.filter(item => item.id !== editingContentId);
+            localStorage.setItem('calendarData', JSON.stringify(calendarData));
         }
-        modal.style.display = 'none';
-        renderCalendar();
+        closeModal();
+        renderCalendar(currentYear, currentMonth);
     };
 }
 
-function getDateKeyFromDay(day) {
-    const dayNumber = day.querySelector('.day-number').textContent;
-    return `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${dayNumber}`;
+function closeModal() {
+    const modal = document.getElementById('modal');
+    modal.style.display = 'none';
 }
+
+// Add event listener to close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('modal');
+    if (event.target == modal) {
+        closeModal();
+    }
+};
 
 function updateContentData() {
     // This function should update currentContent based on the DOM
@@ -283,8 +405,15 @@ function loadFromLocalStorage() {
 
 function resetCalendar() {
     localStorage.removeItem('contentCalendar');
+    localStorage.removeItem('calendarData');
     currentContent = {};
-    renderCalendar();
+    calendarData = []; // Clear the calendarData array
+    const calendarElement = document.getElementById('calendar');
+    if (calendarElement) {
+        calendarElement.innerHTML = ''; // Clear the calendar HTML
+    }
+    renderCalendar(currentYear, currentMonth);
+    console.log("Calendar reset complete");
 }
 
 const resetButton = document.getElementById('reset-button');
@@ -359,84 +488,57 @@ todayButton.addEventListener('click', jumpToToday);
 // Add these functions to your existing script.js file
 
 function autoPopulateCalendar() {
-    console.log("Auto-populate started");
+    // Clear existing calendar data before auto-populating
+    calendarData = [];
+    
     const postsPerWeek = parseInt(document.getElementById('posts-per-week').value);
     const totalPosts = parseInt(document.getElementById('total-posts').value);
     const allowWeekends = document.getElementById('allow-weekends').checked;
     const distribution = document.getElementById('distribution').value;
 
-    console.log(`Settings: ${postsPerWeek} posts per week, ${totalPosts} total posts, weekends ${allowWeekends ? 'allowed' : 'not allowed'}, ${distribution} distribution`);
-
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    console.log(`Current month: ${month + 1}/${year}, ${daysInMonth} days`);
-
     let availableDays = [];
-    for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(year, month, day);
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        const date = new Date(currentYear, currentMonth, i);
         if (allowWeekends || (date.getDay() !== 0 && date.getDay() !== 6)) {
-            availableDays.push(day);
+            availableDays.push(i);
         }
     }
 
-    console.log(`Available days: ${availableDays.join(', ')}`);
+    let postDays = distributePostDays(availableDays, totalPosts, distribution);
 
-    let postDays;
-    if (distribution === 'even') {
-        postDays = distributeEvenly(availableDays, totalPosts);
-    } else if (distribution === 'front-loaded') {
-        postDays = distributeFrontLoaded(availableDays, totalPosts);
-    } else {
-        postDays = distributeBackLoaded(availableDays, totalPosts);
-    }
-
-    console.log(`Selected post days: ${postDays.join(', ')}`);
-
-    // Clear existing content for the current month
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        if (currentContent[dateKey]) {
-            delete currentContent[dateKey];
-        }
-    }
-
-    // Add new placeholders
     postDays.forEach(day => {
-        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        if (!currentContent[dateKey]) {
-            currentContent[dateKey] = [];
-        }
+        const dateString = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const newContent = {
+            id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+            date: dateString,
             platform: getRandomPlatform(),
-            content: 'New auto-generated content',
+            content: 'Auto-generated content',
             description: '',
             postTime: '',
             approvalStatus: 'Draft'
         };
-        currentContent[dateKey].push(newContent);
-        console.log(`Added placeholder for ${dateKey}: ${JSON.stringify(newContent)}`);
+        calendarData.push(newContent);
     });
 
-    console.log("Final currentContent:", currentContent);
+    localStorage.setItem('calendarData', JSON.stringify(calendarData));
+    renderCalendar(currentYear, currentMonth);
+}
 
-    updateContentData();
-    createCalendar(year, month);
-    console.log("Auto-populate completed");
+function distributePostDays(availableDays, totalPosts, distribution) {
+    if (distribution === 'even') {
+        return distributeEvenly(availableDays, totalPosts);
+    } else if (distribution === 'front-loaded') {
+        return availableDays.slice(0, totalPosts);
+    } else {
+        return availableDays.slice(-totalPosts);
+    }
 }
 
 function distributeEvenly(availableDays, totalPosts) {
     const interval = Math.floor(availableDays.length / totalPosts);
     return availableDays.filter((_, index) => index % interval === 0).slice(0, totalPosts);
-}
-
-function distributeFrontLoaded(availableDays, totalPosts) {
-    return availableDays.slice(0, totalPosts);
-}
-
-function distributeBackLoaded(availableDays, totalPosts) {
-    return availableDays.slice(-totalPosts);
 }
 
 function getRandomPlatform() {
@@ -490,21 +592,29 @@ function setupAutoPopulateToggle() {
 }
 
 // Modify the window.onload function
-window.onload = function() {
-    loadFromLocalStorage();
+window.onload = async function() {
+    console.log("Window loaded");
+    await loadCategories();
+    setupEventListeners();
+    toggleView();
     
-    loadCSVData().then(() => {
-        console.log('CSV data loaded, rendering calendar');
-        renderCalendar();
-        setupAutoPopulateToggle(); // Add this line
-    }).catch(error => {
-        console.error('Failed to load CSV data:', error);
-        alert('Failed to load CSV data. The calendar will render without events.');
-        renderCalendar();
-    });
+    // Initialize calendarData
+    calendarData = [];
     
-    // ... (keep existing event listeners) ...
-};
+    // Only load calendar data if it exists and is not empty
+    const savedCalendarData = localStorage.getItem('calendarData');
+    if (savedCalendarData && savedCalendarData !== '[]') {
+        calendarData = JSON.parse(savedCalendarData);
+    }
+    
+    currentDate = new Date();
+    currentYear = currentDate.getFullYear();
+    currentMonth = currentDate.getMonth();
+    console.log("Current date:", currentDate);
+    renderCalendar(currentYear, currentMonth);
+    updateCurrentMonthDisplay();
+    console.log("Initial calendar render complete");
+}
 
 // Make sure the autoPopulateCalendar function is defined
 function autoPopulateCalendar() {
@@ -513,83 +623,6 @@ function autoPopulateCalendar() {
 
 // Add this event listener for the auto-populate button
 document.getElementById('auto-populate-button').addEventListener('click', autoPopulateCalendar);
-
-function createCalendar(year, month) {
-    const calendar = document.getElementById('calendar');
-    calendar.innerHTML = '';
-
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDay = firstDay.getDay();
-
-    for (let i = 0; i < 42; i++) {
-        const cell = document.createElement('div');
-        cell.classList.add('calendar-cell');
-
-        const dateDiv = document.createElement('div');
-        dateDiv.classList.add('calendar-date');
-
-        const contentDiv = document.createElement('div');
-        contentDiv.classList.add('calendar-content');
-
-        const eventsDiv = document.createElement('div');
-        eventsDiv.classList.add('calendar-events');
-
-        cell.appendChild(dateDiv);
-        cell.appendChild(contentDiv);
-        cell.appendChild(eventsDiv);
-
-        if (i >= startingDay && i < startingDay + daysInMonth) {
-            const day = i - startingDay + 1;
-            dateDiv.textContent = day;
-            
-            const date = new Date(year, month, day);
-            const dateString = date.toISOString().split('T')[0];
-            
-            // Add content posts
-            if (currentContent[dateString]) {
-                currentContent[dateString].forEach(content => {
-                    const placeholder = createPlaceholder(content);
-                    contentDiv.appendChild(placeholder);
-                });
-            }
-
-            // Add CSV events
-            if (events.length > 0) {
-                const dayEvents = events.filter(event => {
-                    const eventDate = new Date(event['Start Date']);
-                    return eventDate.toDateString() === date.toDateString() &&
-                           selectedCategories.includes(event.Category);
-                });
-
-                dayEvents.forEach(event => {
-                    const eventElement = document.createElement('div');
-                    eventElement.className = 'calendar-event';
-                    eventElement.textContent = event.Subject;
-                    eventElement.style.backgroundColor = getCategoryColor(event.Category);
-                    eventElement.style.color = 'white';
-                    eventElement.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        openEventModal(event);
-                    });
-                    eventsDiv.appendChild(eventElement);
-                });
-            }
-
-            // Add click event to add content
-            cell.addEventListener('click', (e) => {
-                if (e.target === cell || e.target === dateDiv || e.target === contentDiv) {
-                    openModal(null, cell);
-                }
-            });
-        }
-
-        calendar.appendChild(cell);
-    }
-
-    setupDragAndDrop();
-}
 
 // Helper functions to get colors for platforms and categories
 function getPlatformColor(platform) {
@@ -605,13 +638,311 @@ function getPlatformColor(platform) {
 }
 
 function getCategoryColor(category) {
-    // You can define your own color scheme for categories
     const colors = {
         'Holiday': '#ff9999',
         'Event': '#99ff99',
-        'Promotion': '#9999ff'
+        'Promotion': '#9999ff',
+        // Add more categories and colors as needed
     };
     return colors[category] || '#cccccc';
 }
 
 // Make sure to call createCalendar() when updating the calendar
+
+// Add this function to toggle between month and week views
+function toggleView() {
+    const monthViewBtn = document.getElementById('month-view');
+    const weekViewBtn = document.getElementById('week-view');
+
+    monthViewBtn.addEventListener('click', () => {
+        monthViewBtn.classList.add('active');
+        weekViewBtn.classList.remove('active');
+        renderCalendar(currentYear, currentMonth);
+    });
+
+    weekViewBtn.addEventListener('click', () => {
+        weekViewBtn.classList.add('active');
+        monthViewBtn.classList.remove('active');
+        renderWeekView(new Date(currentYear, currentMonth, 1));
+    });
+}
+
+// Add this function to render the week view
+function renderWeekView(date) {
+    console.log("Rendering week view for:", date);
+    const calendarEl = document.getElementById('calendar');
+    const weekNavigationEl = document.getElementById('week-navigation');
+    calendarEl.innerHTML = '';
+    calendarEl.classList.remove('month-view');
+    calendarEl.classList.add('week-view');
+    weekNavigationEl.style.display = 'flex';
+
+    const weekStart = new Date(date);
+    weekStart.setDate(date.getDate() - date.getDay());
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+
+    for (let i = 0; i < 7; i++) {
+        const dayEl = document.createElement('div');
+        dayEl.classList.add('calendar-cell', 'week-day');
+        const currentDate = new Date(weekStart);
+        currentDate.setDate(weekStart.getDate() + i);
+        
+        const dateString = currentDate.toISOString().split('T')[0];
+        dayEl.setAttribute('data-date', dateString);
+
+        const dayHeader = document.createElement('div');
+        dayHeader.classList.add('day-header');
+
+        const dayNumber = document.createElement('div');
+        dayNumber.classList.add('day-number');
+        dayNumber.textContent = currentDate.getDate();
+
+        const dayName = document.createElement('div');
+        dayName.classList.add('day-name');
+        dayName.textContent = currentDate.toLocaleDateString('en-US', { weekday: 'short' });
+
+        dayHeader.appendChild(dayNumber);
+        dayHeader.appendChild(dayName);
+        dayEl.appendChild(dayHeader);
+
+        const dayContent = document.createElement('div');
+        dayContent.classList.add('day-content');
+        dayEl.appendChild(dayContent);
+
+        if (currentDate.toDateString() === new Date().toDateString()) {
+            dayEl.classList.add('current-day');
+        }
+
+        calendarEl.appendChild(dayEl);
+
+        // Add content placeholders and CSV calendar events
+        updateDayWithContent(dayContent, dateString);
+        updateDayWithEvents(dayContent, currentDate);
+    }
+
+    // Update week range display
+    document.getElementById('week-range').textContent = `${weekStart.toDateString()} - ${weekEnd.toDateString()}`;
+
+    console.log("Week view render complete");
+}
+
+// Helper functions to update day content and events
+function updateDayWithContent(dayElement, dateString) {
+    if (calendarData) {
+        const dayContent = calendarData.filter(content => content.date === dateString);
+        dayContent.forEach(content => {
+            const placeholder = createPlaceholder(content);
+            dayElement.appendChild(placeholder);
+        });
+    }
+}
+
+function updateDayWithEvents(dayElement, date) {
+    const dayEvents = events.filter(event => {
+        const eventDate = new Date(event['Start Date']);
+        return eventDate.toDateString() === date.toDateString() &&
+               selectedCategories.includes(event.Category);
+    });
+
+    dayEvents.forEach(event => {
+        const eventElement = document.createElement('div');
+        eventElement.className = 'calendar-event';
+        eventElement.innerHTML = `
+            <div class="event-title">${event.Subject}</div>
+            <div class="event-category">${event.Category}</div>
+        `;
+        eventElement.style.backgroundColor = getCategoryColor(event.Category);
+        eventElement.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openEventModal(event);
+        });
+        dayElement.appendChild(eventElement);
+    });
+}
+
+// Add this function to handle week navigation
+function navigateWeek(direction) {
+    const weekRange = document.getElementById('week-range').textContent;
+    const weekStart = new Date(weekRange.split(' - ')[0]);
+    weekStart.setDate(weekStart.getDate() + (7 * direction));
+    renderWeekView(weekStart);
+}
+
+// Add event listeners for week navigation
+document.getElementById('prev-week').addEventListener('click', () => navigateWeek(-1));
+document.getElementById('next-week').addEventListener('click', () => navigateWeek(1));
+
+// Update the saveContent function to fix the save issue
+function saveContent(e) {
+    e.preventDefault();
+    const form = document.getElementById('content-form');
+    const formData = new FormData(form);
+    const content = Object.fromEntries(formData.entries());
+
+    content.date = selectedDate;
+
+    // Check if we're editing an existing content or adding a new one
+    if (editingContentId) {
+        const index = calendarData.findIndex(item => item.id === editingContentId);
+        if (index !== -1) {
+            calendarData[index] = { ...calendarData[index], ...content };
+        }
+    } else {
+        content.id = Date.now().toString();
+        calendarData.push(content);
+    }
+
+    localStorage.setItem('calendarData', JSON.stringify(calendarData));
+    closeModal();
+    renderCalendar(currentMonth, currentYear);
+}
+
+// Update the autoPopulateCalendar function to fix the auto-populate issue
+function autoPopulateCalendar() {
+    const postsPerWeek = parseInt(document.getElementById('posts-per-week').value);
+    const totalPosts = parseInt(document.getElementById('total-posts').value);
+    const allowWeekends = document.getElementById('allow-weekends').checked;
+    const distribution = document.getElementById('distribution').value;
+
+    let availableDays = [];
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        const date = new Date(currentYear, currentMonth, i);
+        if (allowWeekends || (date.getDay() !== 0 && date.getDay() !== 6)) {
+            availableDays.push(i);
+        }
+    }
+
+    let selectedDays = [];
+    if (distribution === 'even') {
+        const step = Math.floor(availableDays.length / totalPosts);
+        for (let i = 0; i < totalPosts; i++) {
+            selectedDays.push(availableDays[i * step]);
+        }
+    } else if (distribution === 'front-loaded') {
+        selectedDays = availableDays.slice(0, totalPosts);
+    } else if (distribution === 'back-loaded') {
+        selectedDays = availableDays.slice(-totalPosts);
+    }
+
+    selectedDays.forEach(day => {
+        const content = {
+            id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+            date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`,
+            platform: 'facebook',
+            content: 'Auto-generated content',
+            description: '',
+            postTime: '12:00',
+            approvalStatus: 'Draft'
+        };
+        calendarData.push(content);
+    });
+
+    localStorage.setItem('calendarData', JSON.stringify(calendarData));
+    renderCalendar(currentMonth, currentYear);
+}
+
+// Add event listeners for the new view toggle buttons
+document.addEventListener('DOMContentLoaded', function() {
+    // ... (existing event listeners) ...
+
+    toggleView();
+});
+
+function updateCalendarWithContent() {
+    console.log("Updating calendar with content");
+    const calendarCells = document.querySelectorAll('.calendar-cell');
+    
+    calendarCells.forEach(cell => {
+        const dateString = cell.getAttribute('data-date');
+        if (dateString && calendarData && calendarData.length > 0) {
+            const cellContent = calendarData.filter(content => content.date === dateString);
+            cellContent.forEach(content => {
+                const placeholder = createPlaceholder(content);
+                cell.appendChild(placeholder);
+            });
+        }
+    });
+}
+
+function updateCalendarWithEvents() {
+    console.log("Updating calendar with events");
+    const calendarCells = document.querySelectorAll('.calendar-cell');
+    
+    calendarCells.forEach(cell => {
+        const dateString = cell.getAttribute('data-date');
+        if (dateString) {
+            const cellDate = new Date(dateString);
+            const cellEvents = events.filter(event => {
+                const eventDate = new Date(event['Start Date']);
+                return eventDate.toDateString() === cellDate.toDateString() &&
+                       selectedCategories.includes(event.Category);
+            });
+
+            cellEvents.forEach(event => {
+                const eventElement = document.createElement('div');
+                eventElement.className = 'calendar-event';
+                eventElement.innerHTML = `
+                    <div class="event-title">${event.Subject}</div>
+                    <div class="event-category">${event.Category}</div>
+                `;
+                eventElement.style.backgroundColor = getCategoryColor(event.Category);
+                eventElement.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openEventModal(event);
+                });
+                cell.appendChild(eventElement);
+            });
+        }
+    });
+}
+
+async function loadCategories() {
+    try {
+        await loadCSVData();
+        populateCategoryFilter();
+    } catch (error) {
+        console.error("Error loading categories:", error);
+    }
+}
+
+function setupEventListeners() {
+    document.getElementById('prev-month').addEventListener('click', () => {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        renderCalendar(currentYear, currentMonth);
+        updateCurrentMonthDisplay();
+    });
+
+    document.getElementById('next-month').addEventListener('click', () => {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        renderCalendar(currentYear, currentMonth);
+        updateCurrentMonthDisplay();
+    });
+
+    document.getElementById('today-button').addEventListener('click', () => {
+        const today = new Date();
+        currentYear = today.getFullYear();
+        currentMonth = today.getMonth();
+        renderCalendar(currentYear, currentMonth);
+        updateCurrentMonthDisplay();
+    });
+
+    // Setup auto-populate toggle
+    setupAutoPopulateToggle();
+}
+
+function updateCurrentMonthDisplay() {
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+    document.getElementById('current-month').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+}
