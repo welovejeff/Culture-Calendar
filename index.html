@@ -42,13 +42,24 @@
                     </div>
                     <div class="filter-options">
                         <label class="select-all">
-                            <input type="checkbox" id="select-all-categories" checked>
+                            <input type="checkbox" id="select-all-categories">
                             <span>Select All</span>
                         </label>
                         <span id="selected-count"></span>
                     </div>
                     <div id="category-list" class="category-list">
-                        <!-- Categories will be populated dynamically -->
+                        <div class="category-group">
+                            <h4>Events <span class="toggle-icon">▼</span></h4>
+                            <div class="subcategory-list"></div>
+                        </div>
+                        <div class="category-group">
+                            <h4>Holidays <span class="toggle-icon">▼</span></h4>
+                            <div class="subcategory-list"></div>
+                        </div>
+                        <div class="category-group">
+                            <h4>Observances <span class="toggle-icon">▼</span></h4>
+                            <div class="subcategory-list"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="auto-populate-dropdown">
@@ -83,6 +94,8 @@
                 </div>
             </div>
         </div>
+        <!-- Add this after the main-container div -->
+        <div id="monthly-observances" class="monthly-observances"></div>
 
         <div id="modal" class="modal">
             <div class="modal-content">

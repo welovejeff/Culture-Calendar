@@ -80,285 +80,331 @@ body {
 }
 
 :root {
-    --primary-pink: #FF69B4;
-    --light-pink: #FFC0CB;
-    --primary-blue: #4169E1;
-    --light-blue: #87CEFA;
-    --dark-blue: #191970;
-    --white: #FFFFFF;
+    --background-color: #e0e5ec;
+    --text-color: #333;
+    --primary-color: #4a90e2;
+    --secondary-color: #f0f4f8;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --highlight-color: rgba(255, 255, 255, 0.5);
 }
 
 body {
-    font-family: Arial, sans-serif;
-    margin: 0 auto;
-    padding: 20px;
-    max-width: 1200px;
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
 }
 
-h1 {
-    text-align: center;
+.sidebar-nav {
+    width: 60px;
+    height: 100vh;
+    background-color: var(--secondary-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 3px 0 10px var(--shadow-color);
+}
+
+.sidebar-nav a {
+    color: var(--text-color);
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-decoration: none;
+}
+
+.sidebar-nav a.active {
+    color: var(--primary-color);
+}
+
+.content-wrapper {
+    flex: 1;
+    padding: 20px;
+    margin-left: 60px;
+    width: calc(100% - 60px);
+}
+
+h1, h2, h3, h4 {
+    color: var(--primary-color);
+}
+
+button {
+    background-color: var(--secondary-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: var(--text-color);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 
+        5px 5px 10px var(--shadow-color), 
+        -5px -5px 10px var(--highlight-color);
+}
+
+button:hover {
+    box-shadow: 
+        2px 2px 5px var(--shadow-color), 
+        -2px -2px 5px var(--highlight-color);
+}
+
+button:active {
+    box-shadow: inset 2px 2px 5px var(--shadow-color), 
+                inset -2px -2px 5px var(--highlight-color);
+}
+
+input[type="text"], input[type="date"], input[type="number"], select, textarea {
+    background-color: var(--secondary-color);
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: inset 2px 2px 5px var(--shadow-color), 
+                inset -2px -2px 5px var(--highlight-color);
+}
+
+.main-container {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 #calendar-container {
     flex: 1;
-    margin-right: 20px;
-    min-width: 0;
-    overflow: hidden;
+    background-color: var(--secondary-color);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 
+        10px 10px 20px var(--shadow-color), 
+        -10px -10px 20px var(--highlight-color);
 }
 
-#month-navigation {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.sidebar {
+    width: 300px;
+    background-color: var(--secondary-color);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 
+        10px 10px 20px var(--shadow-color), 
+        -10px -10px 20px var(--highlight-color);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+.calendar-cell {
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    padding: 10px;
+    min-height: 100px;
+    box-shadow: 
+        3px 3px 6px var(--shadow-color), 
+        -3px -3px 6px var(--highlight-color);
+}
+
+.calendar-item {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 5px;
+    font-size: 0.8em;
+}
+
+#category-filter {
     margin-bottom: 20px;
 }
 
-#calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    grid-auto-rows: minmax(120px, auto);
-}
-
-.day {
-    border: 1px solid #ccc;
-    min-height: 120px;
-    padding: 5px;
-    position: relative;
-    overflow: visible;
-}
-
-.day-number {
-    font-weight: bold;
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    background-color: rgba(255, 255, 255, 0.7);
-    padding: 2px 5px;
-    border-radius: 3px;
-}
-
-.content-placeholder {
-    position: relative;
-    padding: 8px 25px 8px 8px;
-    background-color: #f0f0f0;
-    border: 1px solid #999;
-    border-radius: 5px;
-    margin: 4px 0;
-    cursor: move;
-    font-size: 14px;
-    line-height: 1.3;
-    min-height: 30px;
-    margin-bottom: 2px;
-}
-
-.content-preview {
-    display: block;
-    white-space: normal;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 2.6em;
-}
-
-.remove-placeholder {
-    position: absolute;
-    top: 50%;
-    right: 5px;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.5);
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    line-height: 18px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-label, input, select, textarea {
+.category-group h4 {
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    padding: 10px;
     margin-bottom: 10px;
-}
-
-button {
+    box-shadow: 
+        3px 3px 6px var(--shadow-color), 
+        -3px -3px 6px var(--highlight-color);
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-#auto-populate-controls {
-    background-color: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
+.category-item {
+    margin-bottom: 5px;
 }
 
-#auto-populate-controls h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-}
-
-.control-group {
-    margin-bottom: 15px;
+.category-item label {
     display: flex;
     align-items: center;
 }
 
-.control-group label {
-    flex: 1;
+.category-item input[type="checkbox"] {
     margin-right: 10px;
 }
 
-.control-group input[type="number"],
-.control-group select {
-    width: 100px;
-}
-
-#auto-populate-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-#auto-populate-button:hover {
-    background-color: #45a049;
-}
-
-#toolbar {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
-    margin-bottom: 30px;
-}
-
-.draggable-item {
-    padding: 10px;
-    margin: 0 10px;
-    border-radius: 5px;
-    cursor: move;
-}
-
-#day-labels {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    margin-bottom: 5px;
-}
-
-#day-labels div {
-    text-align: center;
-    font-weight: bold;
-    padding: 5px 0;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-}
-
-.current-day {
-    background-color: #e6f3ff;
-    border: 2px solid #4a90e2;
-}
-
-.content-placeholder.auto-populated {
-    background-color: #d3d3d3;
-    color: #333;
-}
-
-.facebook { background-color: #3b5998; color: white; }
-.instagram { background-color: #e1306c; color: white; }
-.twitter { background-color: #1da1f2; color: white; }
-.linkedin { background-color: #0077b5; color: white; }
-.tiktok { background-color: #000000; color: white; }
-.threads { background-color: #000000; color: white; }
-
-.reset-container {
-    text-align: center;
+.auto-populate-dropdown, .reset-container {
     margin-top: 20px;
 }
 
-#reset-button {
-    background-color: #f44336;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-#reset-button:hover {
-    background-color: #d32f2f;
-}
-
-.button-container {
-    display: flex;
-    justify-content: space-around;
+#monthly-observances {
+    background-color: var(--secondary-color);
+    border-radius: 20px;
+    padding: 20px;
     margin-top: 20px;
+    box-shadow: 
+        10px 10px 20px var(--shadow-color), 
+        -10px -10px 20px var(--highlight-color);
 }
 
-#confirm-reset, #cancel-reset {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
+.modal {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: var(--secondary-color);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 
+        10px 10px 20px var(--shadow-color), 
+        -10px -10px 20px var(--highlight-color);
+}
+
+/* Preserve the hidden state of auto-populate controls */
+#auto-populate-controls {
+    display: none;
+}
+
+/* Neumorphic toggle switch for checkboxes */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
     cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--secondary-color);
+    transition: .4s;
+    border-radius: 34px;
+    box-shadow: 
+        inset 2px 2px 5px var(--shadow-color), 
+        inset -2px -2px 5px var(--highlight-color);
 }
 
-#confirm-reset {
-    background-color: #f44336;
-    color: white;
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    box-shadow: 2px 2px 5px var(--shadow-color);
 }
 
-#confirm-reset:hover {
-    background-color: #d32f2f;
+input:checked + .toggle-slider {
+    background-color: var(--primary-color);
 }
 
-#cancel-reset {
-    background-color: #4CAF50;
-    color: white;
+input:checked + .toggle-slider:before {
+    transform: translateX(26px);
 }
 
-#cancel-reset:hover {
-    background-color: #45a049;
+/* Neumorphic scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    box-shadow: 
+        inset 2px 2px 5px var(--shadow-color), 
+        inset -2px -2px 5px var(--highlight-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-color);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+}
+
+/* Additional styles for existing elements */
+#view-toggle {
+    margin-bottom: 10px;
+}
+
+#view-toggle button {
+    margin-right: 10px;
+}
+
+.week-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+#category-filter {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.category-group .subcategory-list {
+    margin-left: 15px;
+    max-height: none;
+    overflow-y: visible;
+    display: block;
+}
+
+#category-list {
+    padding-bottom: 20px;
+}
+
+/* Ensure toggle functionality for category groups */
+.category-group h4 .toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.category-group h4[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
 }
 
 /* ... existing styles ... */
@@ -465,7 +511,6 @@ body {
     width: 250px;
     flex-shrink: 0; /* Prevent the sidebar from shrinking */
     position: sticky;
-    top: 200px; /* Adjust this value to align with the view toggle */
     align-self: flex-start; /* Align to the top of the flex container */
 }
 
@@ -1025,8 +1070,8 @@ body {
 
 .news-item a, .google-trends-link {
     display: inline-block;
-    background-color: #4CAF50;
-    color: white;
+    background-color: #4c78af;
+    color: white; /* Changed from rgb(146, 0, 0) to white for better readability */
     padding: 5px 10px;
     text-decoration: none;
     border-radius: 4px;
@@ -1035,15 +1080,357 @@ body {
 }
 
 .news-item a:hover, .google-trends-link:hover {
-    background-color: #45a049;
+    background-color: #3a5d8f; /* Darker shade for hover state */
 }
 
 .google-trends-link {
     margin-right: 10px;
+    background-color: #4285F4; /* Google's blue color */
+    color: white !important; /* Force white color and override any other styles */
+    display: inline-block;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.google-trends-link:hover {
+    background-color: #3367D6; /* Darker shade of Google's blue for hover state */
+    color: white !important; /* Ensure text remains white on hover */
 }
 
 @media (max-width: 768px) {
     .news-item {
         flex-basis: 100%;
     }
+}
+
+.calendar-item {
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin: 2px 0;
+    font-size: 0.8em;
+    cursor: pointer;
+}
+
+.item-title {
+    font-weight: bold;
+}
+
+.item-category {
+    font-size: 0.9em;
+    opacity: 0.7;
+}
+
+.monthly-observances {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+}
+
+.monthly-observances h3 {
+    margin-top: 0;
+}
+
+.monthly-observances ul {
+    padding-left: 20px;
+}
+
+/* Add these styles to your existing CSS file */
+
+.category-group {
+    margin-bottom: 10px;
+}
+
+.category-group h4 {
+    cursor: pointer;
+    margin: 0;
+    padding: 5px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.category-group h4[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.category-group .subcategory-list {
+    margin-left: 15px;
+    max-height: none; /* Remove the fixed height */
+    overflow-y: visible; /* Change from auto to visible */
+    display: block;
+}
+
+.category-item {
+    padding: 5px 0;
+}
+
+#category-filter {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* Add some padding to the bottom of the category filter for better scrolling */
+#category-list {
+    padding-bottom: 20px;
+}
+
+/* Add or modify these styles */
+#month-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#current-month {
+    margin: 0 20px;
+    font-size: 1.2em;
+}
+
+#date-picker {
+    margin-left: 20px;
+}
+
+#today-button {
+    margin-left: 10px;
+}
+
+/* Add or modify these styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: var(--secondary-color);
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 
+        10px 10px 20px var(--shadow-color), 
+        -10px -10px 20px var(--highlight-color);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Update these styles in your existing CSS file */
+
+.google-trends-link, .read-more {
+    display: inline-block;
+    background-color: #4c78af;
+    color: white;
+    padding: 5px 10px;
+    margin-right: 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.google-trends-link:hover, .read-more:hover {
+    background-color: #3a5d8f;
+}
+
+.google-trends-link {
+    background-color: #4285F4; /* Google's blue color */
+}
+
+.google-trends-link:hover {
+    background-color: #3367D6; /* Darker shade of Google's blue for hover state */
+}
+
+.read-more {
+    background-color: #4c78af; /* Matching the original Wikipedia button color */
+}
+
+.read-more:hover {
+    background-color: #3a5d8f; /* Darker shade for hover state */
+}
+
+/* Add or update these styles in your existing CSS file */
+
+:root {
+    --background-color: #e0e5ec;
+    --text-color: #333;
+    --primary-color: #4a90e2;
+    --secondary-color: #f0f4f8;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --highlight-color: rgba(255, 255, 255, 0.5);
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.trend-item {
+    background-color: var(--secondary-color);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 
+        8px 8px 15px var(--shadow-color), 
+        -8px -8px 15px var(--highlight-color);
+    transition: all 0.3s ease;
+}
+
+.trend-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        12px 12px 20px var(--shadow-color), 
+        -12px -12px 20px var(--highlight-color);
+}
+
+.trend-content h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+}
+
+.news-item {
+    background-color: var(--background-color);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    box-shadow: 
+        inset 4px 4px 8px var(--shadow-color), 
+        inset -4px -4px 8px var(--highlight-color);
+}
+
+.news-image {
+    border-radius: 8px;
+    box-shadow: 
+        4px 4px 8px var(--shadow-color), 
+        -4px -4px 8px var(--highlight-color);
+}
+
+.google-trends-link, .read-more {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 
+        4px 4px 8px var(--shadow-color), 
+        -4px -4px 8px var(--highlight-color);
+}
+
+.google-trends-link {
+    background-color: #4285F4;
+    color: white;
+}
+
+.read-more {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+.google-trends-link:hover, .read-more:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        6px 6px 10px var(--shadow-color), 
+        -6px -6px 10px var(--highlight-color);
+}
+
+.google-trends-link:active, .read-more:active {
+    transform: translateY(0);
+    box-shadow: 
+        inset 4px 4px 8px var(--shadow-color), 
+        inset -4px -4px 8px var(--highlight-color);
+}
+
+#trend-modal .modal-content {
+    background-color: var(--secondary-color);
+    border-radius: 15px;
+    box-shadow: 
+        8px 8px 15px var(--shadow-color), 
+        -8px -8px 15px var(--highlight-color);
+}
+
+#trend-modal .close {
+    color: var(--text-color);
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+#trend-modal .close:hover {
+    opacity: 1;
+}
+
+/* Add some padding and max-width to the content wrapper for better readability */
+.content-wrapper {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Style the h1 title */
+.content-wrapper h1 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px var(--shadow-color);
+}
+
+/* Add some spacing between trend items */
+#trends-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+/* Style the loading indicator */
+#loading {
+    text-align: center;
+    font-size: 1.2em;
+    color: var(--primary-color);
+    margin-top: 50px;
+}
+
+.trend-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 
+        4px 4px 8px var(--shadow-color), 
+        -4px -4px 8px var(--highlight-color);
 }

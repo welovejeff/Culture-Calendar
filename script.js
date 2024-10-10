@@ -6,70 +6,113 @@ let events = [];
 let categories = [];
 let selectedCategories = [];
 let calendarData = [];
+let holidays = [];
+let observances = [];
+let selectedHolidays = [];
+let selectedObservances = [];
 
 // Modify the loadCSVData function to include more logging
 function loadCSVData() {
-    return new Promise((resolve, reject) => {
-        if (typeof Papa === 'undefined') {
-            console.error('PapaParse is not loaded');
-            reject(new Error('PapaParse is not loaded'));
-            return;
-        }
-
-        Papa.parse('events.csv', {
-            header: true,
-            download: true,
-            complete: function(results) {
-                events = results.data;
-                // Extract unique categories
-                categories = [...new Set(events.map(event => event.Category))].sort();
-                console.log('Extracted categories:', categories);
-                populateCategoryFilter();
-                console.log('CSV data loaded:', events);
-                resolve(events);
-            },
-            error: function(error) {
-                console.error('Error loading CSV data:', error);
-                reject(error);
-            }
-        });
+    return Promise.all([
+        new Promise((resolve, reject) => {
+            Papa.parse('events.csv', {
+                header: true,
+                download: true,
+                complete: function(results) {
+                    events = results.data;
+                    console.log('Loaded events:', events);
+                    resolve();
+                },
+                error: reject
+            });
+        }),
+        new Promise((resolve, reject) => {
+            Papa.parse('Holidays.csv', {
+                header: true,
+                download: true,
+                complete: function(results) {
+                    holidays = results.data;
+                    console.log('Loaded holidays:', holidays);
+                    resolve();
+                },
+                error: reject
+            });
+        }),
+        new Promise((resolve, reject) => {
+            Papa.parse('Observances.csv', {
+                header: true,
+                download: true,
+                complete: function(results) {
+                    observances = results.data;
+                    console.log('Loaded observances:', observances);
+                    resolve();
+                },
+                error: reject
+            })
+        })
+    ]).then(() => {
+        categories = [...new Set(events.map(event => event.Category))].sort();
+        populateCategoryFilter();
+        console.log('All CSV data loaded');
+    }).catch(error => {
+        console.error('Error loading CSV data:', error);
     });
 }
 
-// Replace the existing populateCategoryFilter function with this improved version
+// Modify the populateCategoryFilter function
 function populateCategoryFilter() {
     const categoryList = document.getElementById('category-list');
     const selectAllCheckbox = document.getElementById('select-all-categories');
     const selectedCountSpan = document.getElementById('selected-count');
     const searchInput = document.getElementById('category-search');
 
-    categoryList.innerHTML = '';
-    selectedCategories = [...categories]; // All categories selected by default
+    // Clear existing categories
+    document.querySelector('.category-group:nth-child(1) .subcategory-list').innerHTML = '';
+    document.querySelector('.category-group:nth-child(2) .subcategory-list').innerHTML = '';
+    document.querySelector('.category-group:nth-child(3) .subcategory-list').innerHTML = '';
 
+    selectedCategories = [];
+    selectedHolidays = [];
+    selectedObservances = [];
+
+    // Add event categories
     categories.forEach(category => {
-        const categoryItem = document.createElement('div');
-        categoryItem.className = 'category-item';
-        categoryItem.innerHTML = `
-            <label>
-                <input type="checkbox" value="${category}" checked>
-                <span>${category}</span>
-            </label>
-        `;
-        categoryList.appendChild(categoryItem);
+        const categoryItem = createCategoryItem(category, false, 'event');
+        document.querySelector('.category-group:nth-child(1) .subcategory-list').appendChild(categoryItem);
+    });
+
+    // Add holiday categories
+    const holidayCategories = [...new Set(holidays.map(holiday => holiday.Category))].sort();
+    holidayCategories.forEach(category => {
+        const categoryItem = createCategoryItem(category, false, 'holiday');
+        document.querySelector('.category-group:nth-child(2) .subcategory-list').appendChild(categoryItem);
+    });
+
+    // Add observance categories
+    const observanceCategories = [...new Set(observances.map(observance => observance.Category))].sort();
+    observanceCategories.forEach(category => {
+        const categoryItem = createCategoryItem(category, false, 'observance');
+        document.querySelector('.category-group:nth-child(3) .subcategory-list').appendChild(categoryItem);
+    });
+
+    // Add observance subcategories
+    const observanceSubcategories = [...new Set(observances.map(observance => observance.Subcategory).filter(Boolean))].sort();
+    observanceSubcategories.forEach(subcategory => {
+        const categoryItem = createCategoryItem(subcategory, false, 'observance-sub');
+        document.querySelector('.category-group:nth-child(3) .subcategory-list').appendChild(categoryItem);
     });
 
     updateSelectedCount();
 
-    // Event listener for individual category checkboxes
+    // Event listener for category checkboxes
     categoryList.addEventListener('change', (e) => {
         if (e.target.type === 'checkbox') {
-            if (e.target.checked) {
-                selectedCategories.push(e.target.value);
-            } else {
-                selectedCategories = selectedCategories.filter(cat => cat !== e.target.value);
-            }
+            const value = e.target.value;
+            const isChecked = e.target.checked;
+            const type = e.target.dataset.type;
+            updateSelectedCategories(value, isChecked, type);
             updateSelectedCount();
-            selectAllCheckbox.checked = selectedCategories.length === categories.length;
+            selectAllCheckbox.checked = isEverythingSelected();
             renderCalendar(currentYear, currentMonth);
         }
     });
@@ -79,8 +122,8 @@ function populateCategoryFilter() {
         const checkboxes = categoryList.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
             checkbox.checked = selectAllCheckbox.checked;
+            updateSelectedCategories(checkbox.value, selectAllCheckbox.checked, checkbox.dataset.type);
         });
-        selectedCategories = selectAllCheckbox.checked ? [...categories] : [];
         updateSelectedCount();
         renderCalendar(currentYear, currentMonth);
     });
@@ -95,9 +138,64 @@ function populateCategoryFilter() {
         });
     });
 
-    function updateSelectedCount() {
-        selectedCountSpan.textContent = `${selectedCategories.length} of ${categories.length} selected`;
+    // Add event listeners for category group toggles
+    document.querySelectorAll('.category-group h4').forEach(header => {
+        header.addEventListener('click', () => {
+            const subcategoryList = header.nextElementSibling;
+            subcategoryList.style.display = subcategoryList.style.display === 'none' ? 'block' : 'none';
+            header.querySelector('.toggle-icon').textContent = subcategoryList.style.display === 'none' ? '▶' : '▼';
+        });
+    });
+}
+
+function updateSelectedCategories(value, isChecked, type) {
+    if (type === 'holiday') {
+        if (isChecked) {
+            selectedHolidays.push(value);
+        } else {
+            selectedHolidays = selectedHolidays.filter(cat => cat !== value);
+        }
+    } else if (type === 'observance' || type === 'observance-sub') {
+        if (isChecked) {
+            selectedObservances.push(value);
+        } else {
+            selectedObservances = selectedObservances.filter(cat => cat !== value);
+        }
+    } else {
+        if (isChecked) {
+            selectedCategories.push(value);
+        } else {
+            selectedCategories = selectedCategories.filter(cat => cat !== value);
+        }
     }
+}
+
+function updateSelectedCount() {
+    const totalCount = categories.length + 
+                       [...new Set(holidays.map(holiday => holiday.Category))].length + 
+                       [...new Set(observances.map(observance => observance.Category))].length +
+                       [...new Set(observances.map(observance => observance.Subcategory).filter(Boolean))].length;
+    const selectedCount = selectedCategories.length + selectedHolidays.length + selectedObservances.length;
+    document.getElementById('selected-count').textContent = `${selectedCount} of ${totalCount} selected`;
+}
+
+function isEverythingSelected() {
+    return selectedCategories.length === categories.length &&
+           selectedHolidays.length === [...new Set(holidays.map(holiday => holiday.Category))].length &&
+           selectedObservances.length === ([...new Set(observances.map(observance => observance.Category))].length +
+                                           [...new Set(observances.map(observance => observance.Subcategory).filter(Boolean))].length);
+}
+
+function createCategoryItem(category, checked, type) {
+    const categoryItem = document.createElement('div');
+    categoryItem.className = 'category-item';
+    categoryItem.innerHTML = `
+        <label>
+            <input type="checkbox" value="${category}" ${checked ? 'checked' : ''} data-type="${type}">
+            <span>${category}</span>
+        </label>
+    `;
+    return categoryItem;
 }
 
 function renderCalendar(year, month) {
@@ -549,25 +647,40 @@ function getRandomPlatform() {
 // Add this event listener at the end of your script
 document.getElementById('auto-populate-button').addEventListener('click', autoPopulateCalendar);
 
-function openEventModal(event) {
+function openEventModal(item) {
     const modal = document.getElementById('event-modal');
-    document.getElementById('event-title').textContent = event.Subject;
-    document.getElementById('event-category').textContent = event.Category;
-    document.getElementById('event-subcategory').textContent = event.Subcategory;
-    document.getElementById('event-location').textContent = event.Location;
-    document.getElementById('event-date').textContent = `${event['Start Date']} - ${event['End Date']}`;
-    document.getElementById('event-notes').textContent = event.Notes;
-    document.getElementById('event-description').textContent = event.Description;
-    const urlElement = document.getElementById('event-url');
-    urlElement.href = event.URL;
-    urlElement.textContent = event.URL;
+    const title = document.getElementById('event-title');
+    const category = document.getElementById('event-category');
+    const subcategory = document.getElementById('event-subcategory');
+    const location = document.getElementById('event-location');
+    const date = document.getElementById('event-date');
+    const notes = document.getElementById('event-notes');
+    const description = document.getElementById('event-description');
+    const url = document.getElementById('event-url');
+
+    title.textContent = item.Subject;
+    category.textContent = item.Category;
+    subcategory.textContent = item.Subcategory || 'N/A';
+    location.textContent = item.Location || 'N/A';
+    date.textContent = item['Start Date'];
+    notes.textContent = item.Notes || 'N/A';
+    description.textContent = item.Description || 'N/A';
+    
+    if (item.URL) {
+        url.href = item.URL;
+        url.textContent = item.URL;
+        url.style.display = 'inline';
+    } else {
+        url.style.display = 'none';
+    }
+
     modal.style.display = 'block';
 
+    // Close the modal when clicking on the close button or outside the modal
     const closeBtn = modal.querySelector('.close');
     closeBtn.onclick = function() {
         modal.style.display = 'none';
     }
-
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = 'none';
@@ -868,35 +981,85 @@ function updateCalendarWithContent() {
 }
 
 function updateCalendarWithEvents() {
-    console.log("Updating calendar with events");
+    console.log("Updating calendar with events, holidays, and observances");
     const calendarCells = document.querySelectorAll('.calendar-cell');
     
     calendarCells.forEach(cell => {
         const dateString = cell.getAttribute('data-date');
         if (dateString) {
             const cellDate = new Date(dateString);
+            
+            // Add events
             const cellEvents = events.filter(event => {
                 const eventDate = new Date(event['Start Date']);
                 return eventDate.toDateString() === cellDate.toDateString() &&
                        selectedCategories.includes(event.Category);
             });
 
-            cellEvents.forEach(event => {
-                const eventElement = document.createElement('div');
-                eventElement.className = 'calendar-event';
-                eventElement.innerHTML = `
-                    <div class="event-title">${event.Subject}</div>
-                    <div class="event-category">${event.Category}</div>
+            // Add holidays
+            const cellHolidays = holidays.filter(holiday => {
+                const holidayDate = new Date(holiday['Start Date']);
+                return holidayDate.toDateString() === cellDate.toDateString() &&
+                       selectedHolidays.includes(holiday.Category);
+            });
+
+            // Add observances
+            const cellObservances = observances.filter(observance => {
+                const observanceDate = new Date(observance['Start Date']);
+                return observanceDate.toDateString() === cellDate.toDateString() &&
+                       selectedObservances.includes(observance.Subcategory || 'General') &&
+                       (observance.Category === 'Day' || observance.Category === 'Cultural'); // Include both Day and Cultural observances
+            });
+
+            // Combine all items
+            const cellItems = [...cellEvents, ...cellHolidays, ...cellObservances];
+
+            // Clear existing items
+            cell.querySelectorAll('.calendar-item').forEach(item => item.remove());
+
+            cellItems.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'calendar-item';
+                itemElement.innerHTML = `
+                    <div class="item-title">${item.Subject}</div>
+                    <div class="item-category">${item.Category}</div>
                 `;
-                eventElement.style.backgroundColor = getCategoryColor(event.Category);
-                eventElement.addEventListener('click', (e) => {
+                itemElement.style.backgroundColor = getCategoryColor(item.Category);
+                itemElement.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    openEventModal(event);
+                    openEventModal(item);
                 });
-                cell.appendChild(eventElement);
+                cell.appendChild(itemElement);
             });
         }
     });
+
+    // Display monthly observances
+    displayMonthlyObservances();
+}
+
+// Add this new function to display monthly observances
+function displayMonthlyObservances() {
+    const monthlyObservancesContainer = document.getElementById('monthly-observances');
+    monthlyObservancesContainer.innerHTML = '<h3>Monthly Observances</h3>';
+
+    const monthlyObservances = observances.filter(observance => 
+        observance.Category === 'Month' &&
+        new Date(observance['Start Date']).getMonth() === currentMonth &&
+        selectedObservances.includes(observance.Subcategory || 'General')
+    );
+
+    if (monthlyObservances.length > 0) {
+        const observanceList = document.createElement('ul');
+        monthlyObservances.forEach(observance => {
+            const listItem = document.createElement('li');
+            listItem.textContent = observance.Subject;
+            observanceList.appendChild(listItem);
+        });
+        monthlyObservancesContainer.appendChild(observanceList);
+    } else {
+        monthlyObservancesContainer.innerHTML += '<p>No monthly observances for this month.</p>';
+    }
 }
 
 async function loadCategories() {
@@ -939,6 +1102,20 @@ function setupEventListeners() {
 
     // Setup auto-populate toggle
     setupAutoPopulateToggle();
+
+    // Add event listener for closing modals
+    document.querySelectorAll('.modal .close').forEach(closeBtn => {
+        closeBtn.addEventListener('click', function() {
+            this.closest('.modal').style.display = 'none';
+        });
+    });
+
+    // Close modals when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    });
 }
 
 function updateCurrentMonthDisplay() {

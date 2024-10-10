@@ -21,11 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 items.forEach(item => {
                     try {
                         const title = item.querySelector('title')?.textContent || 'No Title';
-                        const description = item.querySelector('description')?.textContent || 'No Description';
                         const pubDate = item.querySelector('pubDate')?.textContent 
                             ? new Date(item.querySelector('pubDate').textContent).toLocaleString()
                             : 'Unknown Date';
                         
+                        // Correctly access the ht:picture element
+                        const imageUrl = item.querySelector('ht\\:picture')?.textContent || '';
+
                         const newsItems = item.querySelectorAll('ht\\:news_item');
                         let newsItemsHtml = '';
 
@@ -52,10 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         trendItem.innerHTML = `
                             <div class="trend-content">
                                 <h2>${title}</h2>
-                                <p>${description}</p>
+                                ${imageUrl ? `<img src="${imageUrl}" alt="${title}" class="trend-image">` : ''}
                                 <p>Published: ${pubDate}</p>
-                                <a href="${googleTrendsLink}" target="_blank" class="google-trends-link">View on Google Trends</a>
-                                <button class="read-more" data-title="${title}">Read more</button>
+                                <a href="${googleTrendsLink}" target="_blank" class="google-trends-link">Google Trends</a>
+                                <button class="read-more" data-title="${title}">Wikipedia</button>
                             </div>
                             <div class="news-items">
                                 ${newsItemsHtml}
@@ -108,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 modalContent.innerHTML = `
                     <p>${data.extract}</p>
-                    <a href="${data.content_urls.desktop.page}" target="_blank">Read more on Wikipedia</a>
+                    <a href="${data.content_urls.desktop.page}" target="_blank">Wikipedia</a>
                 `;
             })
             .catch(error => {
