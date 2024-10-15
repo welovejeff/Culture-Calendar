@@ -186,6 +186,13 @@ function updateSelectedCategories(value, isChecked, type) {
             selectedCategories = selectedCategories.filter(cat => cat !== value);
         }
     }
+    
+    // Update the calendar view without changing the current date
+    if (document.getElementById('week-view').classList.contains('active')) {
+        renderWeekView(currentDate);
+    } else {
+        renderCalendar(currentYear, currentMonth);
+    }
 }
 
 function updateSelectedCount() {
@@ -230,12 +237,12 @@ function renderCalendar(year, month) {
     calendarEl.innerHTML = ''; // Clear the calendar
 
     if (document.getElementById('week-view').classList.contains('active')) {
-        renderWeekView(new Date(year, month, 1));
+        renderWeekView(currentDate); // Use currentDate instead of creating a new date
     } else {
         calendarEl.classList.remove('week-view');
         createCalendar(year, month);
         updateCalendarWithContent();
-        updateCalendarWithEvents(); // Make sure this is called
+        updateCalendarWithEvents();
     }
     console.log("Calendar render complete");
 }
@@ -255,6 +262,8 @@ function createCalendar(year, month) {
 
     console.log("Days in month:", daysInMonth, "Starting day:", startingDay);
 
+    const today = new Date();
+
     // Create calendar cells
     for (let i = 0; i < 42; i++) {
         const cell = document.createElement('div');
@@ -268,7 +277,7 @@ function createCalendar(year, month) {
             const dateString = date.toISOString().split('T')[0];
             cell.setAttribute('data-date', dateString);
 
-            if (date.toDateString() === new Date().toDateString()) {
+            if (date.toDateString() === today.toDateString()) {
                 cell.classList.add('current-day');
             }
 
@@ -591,13 +600,33 @@ function updateDatePicker() {
 }
 
 function jumpToDate(dateString) {
-    currentDate = new Date(dateString);
-    renderCalendar();
+    const newDate = new Date(dateString);
+    if (isNaN(newDate.getTime())) {
+        console.error("Invalid date selected:", dateString);
+        return;
+    }
+    currentDate = newDate;
+    currentYear = currentDate.getFullYear();
+    currentMonth = currentDate.getMonth();
+    if (document.getElementById('week-view').classList.contains('active')) {
+        renderWeekView(currentDate);
+    } else {
+        renderCalendar(currentYear, currentMonth);
+    }
+    updateDatePicker();
 }
 
+// Modify the jumpToToday function
 function jumpToToday() {
     currentDate = new Date();
-    renderCalendar();
+    currentYear = currentDate.getFullYear();
+    currentMonth = currentDate.getMonth();
+    if (document.getElementById('week-view').classList.contains('active')) {
+        renderWeekView(currentDate);
+    } else {
+        renderCalendar(currentYear, currentMonth);
+    }
+    updateDatePicker();
 }
 
 const todayButton = document.getElementById('today-button');
@@ -803,6 +832,15 @@ function toggleView() {
 // Add this function to render the week view
 function renderWeekView(date) {
     console.log("Rendering week view for:", date);
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+        console.error("Invalid date for week view:", date);
+        date = new Date(); // Fallback to current date
+    }
+    currentDate = new Date(date); // Update currentDate
+    currentYear = currentDate.getFullYear();
+    currentMonth = currentDate.getMonth();
+    
+    console.log("Current events:", events);
     const calendarEl = document.getElementById('calendar');
     const weekNavigationEl = document.getElementById('week-navigation');
     calendarEl.innerHTML = '';
@@ -814,6 +852,12 @@ function renderWeekView(date) {
     weekStart.setDate(date.getDate() - date.getDay());
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekStart.getDate() + 6);
+
+    const weekGrid = document.createElement('div');
+    weekGrid.classList.add('calendar-grid', 'week-view');
+    calendarEl.appendChild(weekGrid);
+
+    const today = new Date();
 
     for (let i = 0; i < 7; i++) {
         const dayEl = document.createElement('div');
@@ -843,11 +887,11 @@ function renderWeekView(date) {
         dayContent.classList.add('day-content');
         dayEl.appendChild(dayContent);
 
-        if (currentDate.toDateString() === new Date().toDateString()) {
+        if (currentDate.toDateString() === today.toDateString()) {
             dayEl.classList.add('current-day');
         }
 
-        calendarEl.appendChild(dayEl);
+        weekGrid.appendChild(dayEl);
 
         // Add content placeholders and CSV calendar events
         updateDayWithContent(dayContent, dateString);
@@ -873,7 +917,17 @@ function updateDayWithContent(dayElement, dateString) {
 
 function updateDayWithEvents(dayElement, date) {
     const dayEvents = events.filter(event => {
-        return event['Start Date'].toDateString() === date.toDateString() &&
+        // Check if 'Start Date' exists and is a valid date string
+        if (!event['Start Date'] || typeof event['Start Date'] !== 'string') {
+            console.warn('Invalid Start Date for event:', event);
+            return false;
+        }
+        const eventDate = new Date(event['Start Date']);
+        if (isNaN(eventDate.getTime())) {
+            console.warn('Invalid date string for event:', event);
+            return false;
+        }
+        return eventDate.toDateString() === date.toDateString() &&
                selectedCategories.includes(event.Category);
     });
 
@@ -881,8 +935,8 @@ function updateDayWithEvents(dayElement, date) {
         const eventElement = document.createElement('div');
         eventElement.className = 'calendar-event';
         eventElement.innerHTML = `
-            <div class="event-title">${event.Subject}</div>
-            <div class="event-category">${event.Category}</div>
+            <div class="event-title">${event.Subject || 'Untitled Event'}</div>
+            <div class="event-category">${event.Category || 'Uncategorized'}</div>
         `;
         eventElement.style.backgroundColor = getCategoryColor(event.Category);
         eventElement.addEventListener('click', (e) => {
@@ -895,10 +949,8 @@ function updateDayWithEvents(dayElement, date) {
 
 // Add this function to handle week navigation
 function navigateWeek(direction) {
-    const weekRange = document.getElementById('week-range').textContent;
-    const weekStart = new Date(weekRange.split(' - ')[0]);
-    weekStart.setDate(weekStart.getDate() + (7 * direction));
-    renderWeekView(weekStart);
+    currentDate.setDate(currentDate.getDate() + (7 * direction));
+    renderWeekView(currentDate);
 }
 
 // Add event listeners for week navigation

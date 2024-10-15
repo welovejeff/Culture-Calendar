@@ -170,7 +170,6 @@ input[type="text"], input[type="date"], input[type="number"], select, textarea {
 
 .main-container {
     display: flex;
-    gap: 20px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -498,6 +497,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     align-items: flex-start; /* Align items to the top */
+    padding: 20px;
 }
 
 #calendar-container {
@@ -505,6 +505,7 @@ body {
     margin-right: 20px;
     min-width: 0; /* Allow the container to shrink if needed */
     overflow: hidden; /* Prevent content from overflowing */
+    width: 100%;
 }
 
 .sidebar {
@@ -531,13 +532,20 @@ body {
 }
 
 .calendar-grid.week-view {
+    display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: auto;
+    gap: 5px;
+    width: 100%;
+    overflow: hidden;
 }
 
-.calendar-grid.week-view {
-    grid-template-columns: repeat(7, 1fr);
-    grid-auto-rows: minmax(200px, auto);
+.calendar-grid.week-view .calendar-cell.week-day {
+    min-width: 0;
+    height: auto;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
 }
 
 .week-day {
@@ -803,7 +811,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 15px; /* Move the navigation below the grid */
+    margin-top: 10px;
+    margin-bottom: 10px;
     padding: 10px;
     background-color: #f0f0f0;
     border-radius: 4px;
@@ -883,6 +892,7 @@ body {
 /* Ensure the week view takes full width */
 #calendar-container .calendar-grid.week-view {
     width: 100%;
+    min-width: 700px; /* Ensures minimum width for 7 days */
 }
 
 /* Adjust the week navigation for better spacing */
@@ -900,12 +910,12 @@ body {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .calendar-grid.week-view {
-        flex-direction: column;
+        grid-template-columns: 1fr;
     }
 
     .calendar-grid.week-view .calendar-cell.week-day {
-        min-height: auto;
-        width: 100%;
+        height: auto;
+        min-height: 150px;
     }
 }
 
@@ -959,19 +969,18 @@ body {
 /* Adjust the calendar container */
 #calendar-container {
     width: 100%;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow-x: auto; /* Change from hidden to auto */
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .calendar-grid.week-view {
-        flex-direction: column;
+        grid-template-columns: 1fr;
     }
 
     .calendar-grid.week-view .calendar-cell.week-day {
-        width: 100%;
-        height: auto;
         min-height: 150px;
+        height: auto;
     }
 }
 
@@ -1267,19 +1276,19 @@ body {
 }
 
 .google-trends-link {
-    background-color: #4285F4; /* Google's blue color */
+    background-color: #4285F4;
 }
 
 .google-trends-link:hover {
-    background-color: #3367D6; /* Darker shade of Google's blue for hover state */
+    background-color: #3367D6;
 }
 
 .read-more {
-    background-color: #4c78af; /* Matching the original Wikipedia button color */
+    background-color: #4c78af;
 }
 
 .read-more:hover {
-    background-color: #3a5d8f; /* Darker shade for hover state */
+    background-color: #3a5d8f;
 }
 
 /* Add or update these styles in your existing CSS file */
@@ -1395,7 +1404,6 @@ body {
 
 /* Add some padding and max-width to the content wrapper for better readability */
 .content-wrapper {
-    padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -1433,4 +1441,76 @@ body {
     box-shadow: 
         4px 4px 8px var(--shadow-color), 
         -4px -4px 8px var(--highlight-color);
+}
+
+/* Week view specific styles */
+.calendar-grid.week-view {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.calendar-grid.week-view .calendar-cell.week-day {
+    min-width: 0;
+    height: auto;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+/* Remove these conflicting styles if they exist */
+.calendar-grid.week-view {
+    flex-direction: unset;
+    flex-wrap: unset;
+}
+
+/* Adjust the calendar container */
+#calendar-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .calendar-grid.week-view {
+        grid-template-columns: repeat(7, 1fr);
+    }
+
+    .calendar-grid.week-view .calendar-cell.week-day {
+        min-height: 100px;
+    }
+}
+
+/* Adjust content within week day cells */
+.calendar-grid.week-view .calendar-cell.week-day .day-content {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 0.9em;
+}
+
+/* Make sure the week navigation doesn't cause overflow */
+.week-navigation {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Adjust the size of event elements in week view */
+.calendar-grid.week-view .calendar-event {
+    padding: 2px 4px;
+    margin: 1px 0;
+    font-size: 0.8em;
+}
+
+/* Add this to your existing styles */
+.calendar-cell.current-day {
+    background-color: #e6f2ff; /* Light blue background */
+    border: 2px solid #4a90e2; /* Blue border */
+}
+
+.calendar-grid.week-view .calendar-cell.week-day.current-day {
+    background-color: #e6f2ff; /* Light blue background */
+    border: 2px solid #4a90e2; /* Blue border */
 }
