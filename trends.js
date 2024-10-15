@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const corsProxy = 'https://cors-anywhere.herokuapp.com/';
     const trendsUrl = 'https://trends.google.com/trends/trendingsearches/daily/rss?geo=US';
 
+    // Add this line at the top of the file
+    const INFEGY_SECRET = window.INFEGY_SECRET || (typeof config !== 'undefined' ? config.INFEGY_SECRET : null);
+
     function fetchTrends() {
         fetch(corsProxy + trendsUrl)
             .then(response => {
@@ -152,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(corsProxy + apiUrl, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${config.INFEGY_SECRET}`,
+                    'Authorization': `Bearer ${INFEGY_SECRET}`, // Use INFEGY_SECRET here
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
