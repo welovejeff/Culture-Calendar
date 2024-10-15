@@ -1,2 +1,5 @@
-@Culture Calendar.code-workspace
+@Culture_Calendar.code-workspace
 .DS_Store
+.env
+config.js
+

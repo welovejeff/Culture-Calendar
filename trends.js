@@ -131,5 +131,74 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Social Listening code
+    const socialListeningForm = document.getElementById('social-listening-form');
+    const keywordInput = document.getElementById('keyword');
+    const searchButton = document.getElementById('search-button');
+    const resultsContainer = document.getElementById('social-listening-results');
+
+    socialListeningForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const keyword = keywordInput.value.trim();
+        if (!keyword) return;
+
+        searchButton.disabled = true;
+        searchButton.textContent = 'Searching...';
+        resultsContainer.innerHTML = '<p>Loading results...</p>';
+
+        try {
+            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+            const apiUrl = 'https://starscape.infegy.com/api/query/records';
+            const response = await fetch(corsProxy + apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${config.INFEGY_SECRET}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    dataset_id: 'ds_gj4u3F40SLa',
+                    query: {
+                        op: 'contains',
+                        fields: ['title', 'body'],
+                        value: keyword
+                    },
+                    records: {
+                        size: 5
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+
+            const data = await response.json();
+            displaySocialListeningResults(data.records);
+        } catch (error) {
+            console.error('Error fetching social listening data:', error);
+            resultsContainer.innerHTML = '<p>An error occurred while fetching data. Please try again.</p>';
+        } finally {
+            searchButton.disabled = false;
+            searchButton.textContent = 'Search';
+        }
+    });
+
+    function displaySocialListeningResults(posts) {
+        if (posts.length === 0) {
+            resultsContainer.innerHTML = '<p>No results found.</p>';
+            return;
+        }
+
+        const resultsHtml = posts.map(post => `
+            <div class="social-post">
+                <h3>${post.title}</h3>
+                <p>${post.body}</p>
+            </div>
+        `).join('');
+
+        resultsContainer.innerHTML = resultsHtml;
+    }
+
+    // Call the existing fetchTrends function to load Google Trends
     fetchTrends();
 });
