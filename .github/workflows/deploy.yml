@@ -15,6 +15,11 @@ jobs:
       - name: Create env.js file
         run: |
           echo "window.INFEGY_SECRET = '${{ secrets.INFEGY_SECRET }}';" > env.js
+      - name: Verify env.js content
+        run: |
+          cat env.js
+          echo "ENV.JS content:"
+          cat env.js | sed 's/.*\(.\{5\}\)$/\1.../'
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
