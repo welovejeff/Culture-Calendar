@@ -9,6 +9,7 @@
     <script>
         // This will be replaced by GitHub Actions for deployment
         window.INFEGY_SECRET = '%%INFEGY_SECRET%%';
+        console.log("Initial INFEGY_SECRET status:", window.INFEGY_SECRET !== '%%INFEGY_SECRET%%' ? "Set" : "Not set");
     </script>
 </head>
 <body>

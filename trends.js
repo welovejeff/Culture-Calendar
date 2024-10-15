@@ -5,8 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const trendsUrl = 'https://trends.google.com/trends/trendingsearches/daily/rss?geo=US';
 
     // Add this line at the top of the file
+    console.log("INFEGY_SECRET status:", window.INFEGY_SECRET ? "Set" : "Not set");
+
     const INFEGY_SECRET = window.INFEGY_SECRET !== '%%INFEGY_SECRET%%' ? window.INFEGY_SECRET : 
                           (typeof config !== 'undefined' && config.INFEGY_SECRET ? config.INFEGY_SECRET : null);
+
+    console.log("Final INFEGY_SECRET status:", INFEGY_SECRET ? "Set" : "Not set");
 
     function fetchTrends() {
         fetch(corsProxy + trendsUrl)

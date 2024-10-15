@@ -10,17 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      - name: Install dependencies
-        run: npm ci
+      - name: Debug INFEGY_SECRET
+        run: |
+          echo "INFEGY_SECRET length: ${#INFEGY_SECRET}"
+          echo "INFEGY_SECRET starts with: ${INFEGY_SECRET:0:5}..."
+        env:
+          INFEGY_SECRET: ${{ secrets.INFEGY_SECRET }}
       - name: Inject INFEGY_SECRET
         run: |
           sed -i 's/%%INFEGY_SECRET%%/${{ secrets.INFEGY_SECRET }}/g' trends.html
-      - name: Build
-        run: npm run build
+      - name: Verify injection
+        run: |
+          grep -q "${{ secrets.INFEGY_SECRET }}" trends.html && echo "Secret injected successfully" || echo "Secret injection failed"
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
