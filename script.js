@@ -11,7 +11,18 @@ let observances = [];
 let selectedHolidays = [];
 let selectedObservances = [];
 
-// Modify the loadCSVData function to include more logging
+// At the beginning of the file, add this function
+function logState() {
+    console.log("Current state:");
+    console.log("Events:", events.length);
+    console.log("Holidays:", holidays.length);
+    console.log("Observances:", observances.length);
+    console.log("Selected Categories:", selectedCategories);
+    console.log("Selected Holidays:", selectedHolidays);
+    console.log("Selected Observances:", selectedObservances);
+}
+
+// Remove the parseDate function and modify the loadCSVData function
 function loadCSVData() {
     return Promise.all([
         new Promise((resolve, reject) => {
@@ -20,7 +31,10 @@ function loadCSVData() {
                 download: true,
                 complete: function(results) {
                     events = results.data;
-                    console.log('Loaded events:', events);
+                    console.log('Loaded events:', events.length);
+                    if (events.length > 0) {
+                        console.log('Sample event:', events[0]);
+                    }
                     resolve();
                 },
                 error: reject
@@ -32,7 +46,7 @@ function loadCSVData() {
                 download: true,
                 complete: function(results) {
                     holidays = results.data;
-                    console.log('Loaded holidays:', holidays);
+                    console.log('Loaded holidays:', holidays.length);
                     resolve();
                 },
                 error: reject
@@ -44,7 +58,7 @@ function loadCSVData() {
                 download: true,
                 complete: function(results) {
                     observances = results.data;
-                    console.log('Loaded observances:', observances);
+                    console.log('Loaded observances:', observances.length);
                     resolve();
                 },
                 error: reject
@@ -52,8 +66,10 @@ function loadCSVData() {
         })
     ]).then(() => {
         categories = [...new Set(events.map(event => event.Category))].sort();
+        console.log('Categories:', categories);
         populateCategoryFilter();
         console.log('All CSV data loaded');
+        logState();
     }).catch(error => {
         console.error('Error loading CSV data:', error);
     });
@@ -103,6 +119,8 @@ function populateCategoryFilter() {
     });
 
     updateSelectedCount();
+
+    console.log("Categories populated. Selected:", selectedCategories, selectedHolidays, selectedObservances);
 
     // Event listener for category checkboxes
     categoryList.addEventListener('change', (e) => {
@@ -173,7 +191,7 @@ function updateSelectedCategories(value, isChecked, type) {
 function updateSelectedCount() {
     const totalCount = categories.length + 
                        [...new Set(holidays.map(holiday => holiday.Category))].length + 
-                       [...new Set(observances.map(observance => observance.Category))].length +
+                       [...new Set(observances.map(observance => observance.Category))].length + 
                        [...new Set(observances.map(observance => observance.Subcategory).filter(Boolean))].length;
     const selectedCount = selectedCategories.length + selectedHolidays.length + selectedObservances.length;
     document.getElementById('selected-count').textContent = `${selectedCount} of ${totalCount} selected`;
@@ -198,8 +216,10 @@ function createCategoryItem(category, checked, type) {
     return categoryItem;
 }
 
+// Modify the renderCalendar function
 function renderCalendar(year, month) {
     console.log("Rendering calendar for:", year, month);
+    logState();
     const calendarEl = document.getElementById('calendar');
     
     if (!calendarEl) {
@@ -215,7 +235,7 @@ function renderCalendar(year, month) {
         calendarEl.classList.remove('week-view');
         createCalendar(year, month);
         updateCalendarWithContent();
-        updateCalendarWithEvents();
+        updateCalendarWithEvents(); // Make sure this is called
     }
     console.log("Calendar render complete");
 }
@@ -853,8 +873,7 @@ function updateDayWithContent(dayElement, dateString) {
 
 function updateDayWithEvents(dayElement, date) {
     const dayEvents = events.filter(event => {
-        const eventDate = new Date(event['Start Date']);
-        return eventDate.toDateString() === date.toDateString() &&
+        return event['Start Date'].toDateString() === date.toDateString() &&
                selectedCategories.includes(event.Category);
     });
 
@@ -980,36 +999,61 @@ function updateCalendarWithContent() {
     });
 }
 
+// Modify the updateCalendarWithEvents function
 function updateCalendarWithEvents() {
     console.log("Updating calendar with events, holidays, and observances");
+    logState();
+    
     const calendarCells = document.querySelectorAll('.calendar-cell');
     
     calendarCells.forEach(cell => {
         const dateString = cell.getAttribute('data-date');
         if (dateString) {
             const cellDate = new Date(dateString);
+            console.log("Processing cell date:", cellDate);
             
             // Add events
             const cellEvents = events.filter(event => {
                 const eventDate = new Date(event['Start Date']);
-                return eventDate.toDateString() === cellDate.toDateString() &&
+                eventDate.setDate(eventDate.getDate() - 1); // Subtract one day
+                const match = eventDate.toDateString() === cellDate.toDateString() &&
                        selectedCategories.includes(event.Category);
+                if (match) {
+                    console.log("Matched event:", event);
+                }
+                return match;
             });
+
+            console.log(`Cell ${dateString} events:`, cellEvents.length);
 
             // Add holidays
             const cellHolidays = holidays.filter(holiday => {
                 const holidayDate = new Date(holiday['Start Date']);
-                return holidayDate.toDateString() === cellDate.toDateString() &&
+                holidayDate.setDate(holidayDate.getDate() - 1); // Subtract one day
+                const match = holidayDate.toDateString() === cellDate.toDateString() &&
                        selectedHolidays.includes(holiday.Category);
+                if (match) {
+                    console.log("Matched holiday:", holiday);
+                }
+                return match;
             });
+
+            console.log(`Cell ${dateString} holidays:`, cellHolidays.length);
 
             // Add observances
             const cellObservances = observances.filter(observance => {
                 const observanceDate = new Date(observance['Start Date']);
-                return observanceDate.toDateString() === cellDate.toDateString() &&
+                observanceDate.setDate(observanceDate.getDate() - 1); // Subtract one day
+                const match = observanceDate.toDateString() === cellDate.toDateString() &&
                        selectedObservances.includes(observance.Subcategory || 'General') &&
-                       (observance.Category === 'Day' || observance.Category === 'Cultural'); // Include both Day and Cultural observances
+                       (observance.Category === 'Day' || observance.Category === 'Cultural');
+                if (match) {
+                    console.log("Matched observance:", observance);
+                }
+                return match;
             });
+
+            console.log(`Cell ${dateString} observances:`, cellObservances.length);
 
             // Combine all items
             const cellItems = [...cellEvents, ...cellHolidays, ...cellObservances];
@@ -1031,6 +1075,8 @@ function updateCalendarWithEvents() {
                 });
                 cell.appendChild(itemElement);
             });
+
+            console.log(`Added ${cellItems.length} items to cell ${dateString}`);
         }
     });
 
@@ -1038,16 +1084,18 @@ function updateCalendarWithEvents() {
     displayMonthlyObservances();
 }
 
-// Add this new function to display monthly observances
+// Modify the displayMonthlyObservances function
 function displayMonthlyObservances() {
     const monthlyObservancesContainer = document.getElementById('monthly-observances');
     monthlyObservancesContainer.innerHTML = '<h3>Monthly Observances</h3>';
 
-    const monthlyObservances = observances.filter(observance => 
-        observance.Category === 'Month' &&
-        new Date(observance['Start Date']).getMonth() === currentMonth &&
-        selectedObservances.includes(observance.Subcategory || 'General')
-    );
+    const monthlyObservances = observances.filter(observance => {
+        const observanceDate = new Date(observance['Start Date']);
+        observanceDate.setDate(observanceDate.getDate() - 1); // Subtract one day
+        return observance.Category === 'Month' &&
+               observanceDate.getMonth() === currentMonth &&
+               selectedObservances.includes(observance.Subcategory || 'General');
+    });
 
     if (monthlyObservances.length > 0) {
         const observanceList = document.createElement('ul');
@@ -1123,3 +1171,9 @@ function updateCurrentMonthDisplay() {
         "July", "August", "September", "October", "November", "December"];
     document.getElementById('current-month').textContent = `${monthNames[currentMonth]} ${currentYear}`;
 }
+
+// Add this at the end of your script
+window.addEventListener('load', () => {
+    console.log("Window loaded");
+    logState();
+});
