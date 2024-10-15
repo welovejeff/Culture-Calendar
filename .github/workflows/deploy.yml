@@ -18,7 +18,7 @@ jobs:
         run: npm ci
       - name: Inject INFEGY_SECRET
         run: |
-          sed -i '/<\/head>/i <script>window.INFEGY_SECRET = "${{ secrets.INFEGY_SECRET }}";</script>' trends.html
+          sed -i 's/%%INFEGY_SECRET%%/${{ secrets.INFEGY_SECRET }}/g' trends.html
       - name: Build
         run: npm run build
       - name: Deploy

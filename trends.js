@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const trendsUrl = 'https://trends.google.com/trends/trendingsearches/daily/rss?geo=US';
 
     // Add this line at the top of the file
-    const INFEGY_SECRET = window.INFEGY_SECRET || null;
+    const INFEGY_SECRET = window.INFEGY_SECRET !== '%%INFEGY_SECRET%%' ? window.INFEGY_SECRET : 
+                          (typeof config !== 'undefined' && config.INFEGY_SECRET ? config.INFEGY_SECRET : null);
 
     function fetchTrends() {
         fetch(corsProxy + trendsUrl)
