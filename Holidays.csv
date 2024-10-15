@@ -1,0 +1,379 @@
+Category,Subcategory,Subject,Start Date,Date Type,Calendar Type,Notes,URL,Description
+Federal Holiday,,New Year's Day,1/1/2024,Fixed,Gregorian,,https://www.redcort.com/us-federal-bank-holidays,"Category: Federal Holiday
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: https://www.redcort.com/us-federal-bank-holidays"
+Federal Holiday,,Martin Luther King Jr. Day,1/15/2024,Floating,Gregorian,3rd Mon in Jan,https://www.redcort.com/us-federal-bank-holidays,"Category: Federal Holiday
+Subcategory: 
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: 3rd Mon in Jan
+URL: https://www.redcort.com/us-federal-bank-holidays"
+Cultural,,Australia Day,1/26/2024,Fixed,Gregorian,,,"Category: Cultural
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Cultural,,Groundhog Day,2/2/2024,Fixed,Gregorian,,,"Category: Cultural
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Remembrance,,Rosa Parks Day,2/4/2024,Fixed,Gregorian,Date celebrated in California and Missouri,,"Category: Remembrance
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: Date celebrated in California and Missouri
+URL: "
+Religious,Muslim,Isra and Mi'raj,2/7/2024,Floating,Lunisolar,"27th day of Rajab, the seventh month in the Islamic calendar. Also known as Al Isra' wal Miraj or Prophet's Ascension.",,"Category: Religious
+Subcategory: Muslim
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 27th day of Rajab, the seventh month in the Islamic calendar. Also known as Al Isra' wal Miraj or Prophet's Ascension.
+URL: "
+Cultural,,Lunar New Year,2/10/2024,Floating,Lunisolar,New moon on the first day of the first lunar month,https://nationaldaycalendar.com/chinese-new-year-changes-annually/,"Category: Cultural
+Subcategory: 
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: New moon on the first day of the first lunar month
+URL: https://nationaldaycalendar.com/chinese-new-year-changes-annually/"
+Religious,Christianity,Mardi Gras,2/13/2024,Floating,Lunisolar,47 days before Easter Sunday. Also known as Shrove Tuesday or Fat Tuesday.,,"Category: Religious
+Subcategory: Christianity
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 47 days before Easter Sunday. Also known as Shrove Tuesday or Fat Tuesday.
+URL: "
+Religious,Christianity,Ash Wednesday,2/14/2024,Floating,Lunisolar,46 days before Easter. Also known as Lent.,,"Category: Religious
+Subcategory: Christianity
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 46 days before Easter. Also known as Lent.
+URL: "
+Cultural,,Valentine's Day,2/14/2024,Fixed,Gregorian,,,"Category: Cultural
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Federal Holiday,,George Washington's Birthday,2/19/2024,Floating,Gregorian,3rd Mon in Feb. Also known as Presidents' Day.,https://www.redcort.com/us-federal-bank-holidays,"Category: Federal Holiday
+Subcategory: 
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: 3rd Mon in Feb. Also known as Presidents' Day.
+URL: https://www.redcort.com/us-federal-bank-holidays"
+Seasonal,,Leap Day,2/29/2024,Fixed,Gregorian,,,"Category: Seasonal
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Seasonal,,Daylight Saving Time starts,3/10/2024,Floating,Gregorian,2nd Sun in Mar,https://fas.org/sgp/crs/misc/R45208.pdf,"Category: Seasonal
+Subcategory: 
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: 2nd Sun in Mar
+URL: https://fas.org/sgp/crs/misc/R45208.pdf"
+Religious,Muslim,Ramadan,3/10/2024,Floating,Lunisolar,"1st day of the ninth month of the Islamic calendar, which is determined by the sighting of the crescent moon",,"Category: Religious
+Subcategory: Muslim
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 1st day of the ninth month of the Islamic calendar, which is determined by the sighting of the crescent moon
+URL: "
+Cultural,Religious,St. Patrick's Day,3/17/2024,Fixed,Gregorian,,,"Category: Cultural
+Subcategory: Religious
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Seasonal,,Spring Equinox,3/19/2024,Floating,Lunisolar,"When the Sun stands directly above the equator while crossing from the south to the north. Day and night of equal length, marking the start of spring",https://www.britannica.com/story/whats-the-difference-between-a-solstice-and-an-equinox,"Category: Seasonal
+Subcategory: 
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: When the Sun stands directly above the equator while crossing from the south to the north. Day and night of equal length, marking the start of spring
+URL: https://www.britannica.com/story/whats-the-difference-between-a-solstice-and-an-equinox"
+Religious,Christianity,Palm Sunday,3/24/2024,Floating,Lunisolar,Sunday before Easter Sunday,,"Category: Religious
+Subcategory: Christianity
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: Sunday before Easter Sunday
+URL: "
+Religious,Hinduism,Holi,3/25/2024,Floating,Lunisolar,Last full moon day of the Hindu calendar month marking the spring,,"Category: Religious
+Subcategory: Hinduism
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: Last full moon day of the Hindu calendar month marking the spring
+URL: "
+Religious,Christianity,Good Friday,3/29/2024,Floating,Lunisolar,Friday before Easter,,"Category: Religious
+Subcategory: Christianity
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: Friday before Easter
+URL: "
+Religious,Christianity,Holy Saturday,3/30/2024,Floating,Lunisolar,Saturday before Easter,,"Category: Religious
+Subcategory: Christianity
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: Saturday before Easter
+URL: "
+Religious,Christianity,Easter Sunday,3/31/2024,Floating,Lunisolar,1st Sunday after the first full moon that occurs on or after the vernal equinox,,"Category: Religious
+Subcategory: Christianity
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 1st Sunday after the first full moon that occurs on or after the vernal equinox
+URL: "
+Religious,Muslim,Eid al-Fitr,4/9/2024,Floating,Lunisolar,1st day of the 10th month of Shawwal on the Islamic calendar,,"Category: Religious
+Subcategory: Muslim
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 1st day of the 10th month of Shawwal on the Islamic calendar
+URL: "
+Governmental,Finance,Tax Day,4/15/2024,Fixed,Gregorian,,,"Category: Governmental
+Subcategory: Finance
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Religious,Judaism,Passover,4/22/2024,Floating,Lunisolar,14th day of Nisan on the Hebrew calendar at the time of the full moon,http://www.rayfowler.org/writings/articles/determining-the-dates-for-easter-and-passover/,"Category: Religious
+Subcategory: Judaism
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 14th day of Nisan on the Hebrew calendar at the time of the full moon
+URL: http://www.rayfowler.org/writings/articles/determining-the-dates-for-easter-and-passover/"
+Cultural,Remembrance,Cinco de Mayo,5/5/2024,Fixed,Gregorian,,,"Category: Cultural
+Subcategory: Remembrance
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Cultural,Remembrance,Mother's Day,5/12/2024,Floating,Gregorian,2nd Sun in May,,"Category: Cultural
+Subcategory: Remembrance
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: 2nd Sun in May
+URL: "
+Remembrance,,Armed Forces Day,5/18/2024,Floating,Gregorian,3rd Saturday in May,,"Category: Remembrance
+Subcategory: 
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: 3rd Saturday in May
+URL: "
+Federal Holiday,Remembrance,Memorial Day,5/27/2024,Floating,Gregorian,Last Mon in May,https://www.redcort.com/us-federal-bank-holidays,"Category: Federal Holiday
+Subcategory: Remembrance
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: Last Mon in May
+URL: https://www.redcort.com/us-federal-bank-holidays"
+Religious,Christianity,Pentecost,5/29/2024,Floating,Lunisolar,7th Sunday after Easter,,"Category: Religious
+Subcategory: Christianity
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 7th Sunday after Easter
+URL: "
+Religious,Christianity,Corpus Christi,5/30/2024,Floating,Lunisolar,Thursday after Trinity Sunday,,"Category: Religious
+Subcategory: Christianity
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: Thursday after Trinity Sunday
+URL: "
+Remembrance,,D-Day,6/6/2024,Fixed,Gregorian,,,"Category: Remembrance
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Remembrance,,Flag Day ,6/14/2024,Fixed,Gregorian,,,"Category: Remembrance
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Religious,Muslim,Eid al-Adha,6/16/2024,Floating,Lunisolar,"10th day of Dhul Hijjah, the 12th and last month of the Muslim calendar.",,"Category: Religious
+Subcategory: Muslim
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 10th day of Dhul Hijjah, the 12th and last month of the Muslim calendar.
+URL: "
+Cultural,Remembrance,Father's Day,6/16/2024,Floating,Gregorian,3rd Sun in Jun,,"Category: Cultural
+Subcategory: Remembrance
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: 3rd Sun in Jun
+URL: "
+Remembrance,,Juneteenth,6/19/2024,Fixed,Gregorian,,,"Category: Remembrance
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Seasonal,,Summer Solstice,6/20/2024,Floating,Lunisolar,"When the Earth's tilt towards the Sun is at its maximum and the Sun reaches its highest position in the sky. Longest day of the year, marking the start of summer",https://www.britannica.com/story/whats-the-difference-between-a-solstice-and-an-equinox,"Category: Seasonal
+Subcategory: 
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: When the Earth's tilt towards the Sun is at its maximum and the Sun reaches its highest position in the sky. Longest day of the year, marking the start of summer
+URL: https://www.britannica.com/story/whats-the-difference-between-a-solstice-and-an-equinox"
+Federal Holiday,Remembrance,Independence Day,7/4/2024,Fixed,Gregorian,Also known as the 4th of July,https://www.redcort.com/us-federal-bank-holidays,"Category: Federal Holiday
+Subcategory: Remembrance
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: Also known as the 4th of July
+URL: https://www.redcort.com/us-federal-bank-holidays"
+Cultural,Remembrance,Bastille Day,7/14/2024,Fixed,Gregorian,,,"Category: Cultural
+Subcategory: Remembrance
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Cultural,Remembrance,Parents' Day,7/28/2024,Floating,Gregorian,4th Sun of Jul,,"Category: Cultural
+Subcategory: Remembrance
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: 4th Sun of Jul
+URL: "
+Federal Holiday,,Labor Day,9/2/2024,Floating,Gregorian,1st Mon in Sep,https://www.redcort.com/us-federal-bank-holidays,"Category: Federal Holiday
+Subcategory: 
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: 1st Mon in Sep
+URL: https://www.redcort.com/us-federal-bank-holidays"
+Cultural,Remembrance,Grandparents' Day,9/8/2024,Floating,Gregorian,1st Sun after Labor Day,,"Category: Cultural
+Subcategory: Remembrance
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: 1st Sun after Labor Day
+URL: "
+Remembrance,,Patriot Day,9/11/2024,Fixed,Gregorian,,,"Category: Remembrance
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Seasonal,,Autumnal Equinox,9/23/2024,Floating,Lunisolar,"When the Sun stands directly above the equator while crossing from the south to the north. Day and night of equal length, marking the start of autumn",https://www.britannica.com/story/whats-the-difference-between-a-solstice-and-an-equinox,"Category: Seasonal
+Subcategory: 
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: When the Sun stands directly above the equator while crossing from the south to the north. Day and night of equal length, marking the start of autumn
+URL: https://www.britannica.com/story/whats-the-difference-between-a-solstice-and-an-equinox"
+Religious,Judaism,Rosh Hashana,10/2/2024,Floating,Lunisolar,1st day of the 7th month Tishrei in the Hebrew cal,,"Category: Religious
+Subcategory: Judaism
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 1st day of the 7th month Tishrei in the Hebrew cal
+URL: "
+Religious,Judaism,Yom Kippur,10/11/2024,Floating,Lunisolar,10th day of 7th month Tishrei in the Hebrew calendar,,"Category: Religious
+Subcategory: Judaism
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 10th day of 7th month Tishrei in the Hebrew calendar
+URL: "
+Federal Holiday,,Columbus Day,10/14/2024,Floating,Gregorian,2nd Mon in Oct. Also known as Indigenous People's Day.,https://www.redcort.com/us-federal-bank-holidays,"Category: Federal Holiday
+Subcategory: 
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: 2nd Mon in Oct. Also known as Indigenous People's Day.
+URL: https://www.redcort.com/us-federal-bank-holidays"
+Cultural,Remembrance,Dia De Las Muertos,10/31/2024,Fixed,Gregorian,,,"Category: Cultural
+Subcategory: Remembrance
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Cultural,,Halloween,10/31/2024,Fixed,Gregorian,,,"Category: Cultural
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Religious,Hinduism,Diwali,11/1/2024,Floating,Lunisolar,"15th day of the month Kartik, the day of the new moon or Amavasya on the Hindu calendar. Also known as Deepavali.",,"Category: Religious
+Subcategory: Hinduism
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 15th day of the month Kartik, the day of the new moon or Amavasya on the Hindu calendar. Also known as Deepavali.
+URL: "
+Religious,Christianity,All Saints' Day,11/1/2024,Fixed,Gregorian,,,"Category: Religious
+Subcategory: Christianity
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Seasonal,,Daylight Saving Time ends,11/3/2024,Floating,Lunisolar,1st Sunday in November,,"Category: Seasonal
+Subcategory: 
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 1st Sunday in November
+URL: "
+Federal Holiday,Remembrance,Veterans Day,11/11/2024,Fixed,Gregorian,,https://www.redcort.com/us-federal-bank-holidays,"Category: Federal Holiday
+Subcategory: Remembrance
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: https://www.redcort.com/us-federal-bank-holidays"
+Federal Holiday,Cultural,Thanksgiving Day,11/28/2024,Floating,Gregorian,4th Thu in Nov,https://www.redcort.com/us-federal-bank-holidays,"Category: Federal Holiday
+Subcategory: Cultural
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: 4th Thu in Nov
+URL: https://www.redcort.com/us-federal-bank-holidays"
+Religious,Christianity,Advent Sun,12/1/2024,Floating,Gregorian,4th Sun before Christmas Day,,"Category: Religious
+Subcategory: Christianity
+Date Type: Floating
+Calendar Type: Gregorian
+Notes: 4th Sun before Christmas Day
+URL: "
+Remembrance,,Rosa Parks Day,12/1/2024,Fixed,Gregorian,Date celebrated in Ohio and Oregon,,"Category: Remembrance
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: Date celebrated in Ohio and Oregon
+URL: "
+Religious,Christianity,Feast of the Immaculate Conception,12/8/2024,Fixed,Gregorian,,,"Category: Religious
+Subcategory: Christianity
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Cultural,,Our Lady of Guadalupe Day,12/12/2024,Fixed,Gregorian,,,"Category: Cultural
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Seasonal,,Winter Solstice,12/21/2024,Floating,Lunisolar,"When the Earth's tilt away from the Sun is at its maximum and the Sun's maximum elevation in the sky is at its lowest. Shortest day of the year, marking the start of winter",https://www.britannica.com/story/whats-the-difference-between-a-solstice-and-an-equinox,"Category: Seasonal
+Subcategory: 
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: When the Earth's tilt away from the Sun is at its maximum and the Sun's maximum elevation in the sky is at its lowest. Shortest day of the year, marking the start of winter
+URL: https://www.britannica.com/story/whats-the-difference-between-a-solstice-and-an-equinox"
+Cultural,Remembrance,Christmas Eve,12/24/2024,Fixed,Gregorian,,,"Category: Cultural
+Subcategory: Remembrance
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Federal Holiday,,Christmas Day,12/25/2024,Fixed,Gregorian,,https://www.redcort.com/us-federal-bank-holidays,"Category: Federal Holiday
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: https://www.redcort.com/us-federal-bank-holidays"
+Religious,Judaism,Hanukkah,12/25/2024,Floating,Lunisolar,25th day of Kislev in the Hebrew calendar. Also known as Chanukah.,,"Category: Religious
+Subcategory: Judaism
+Date Type: Floating
+Calendar Type: Lunisolar
+Notes: 25th day of Kislev in the Hebrew calendar. Also known as Chanukah.
+URL: "
+Cultural,,Kwanzaa,12/26/2024,Fixed,Gregorian,,,"Category: Cultural
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
+Cultural,,New Year's Eve,12/31/2024,Fixed,Gregorian,,,"Category: Cultural
+Subcategory: 
+Date Type: Fixed
+Calendar Type: Gregorian
+Notes: 
+URL: "
