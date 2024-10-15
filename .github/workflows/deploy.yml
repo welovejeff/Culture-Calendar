@@ -8,21 +8,14 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v2
-      - name: Debug INFEGY_SECRET
+      - name: Create env.js file
         run: |
-          echo "INFEGY_SECRET length: ${#INFEGY_SECRET}"
-          echo "INFEGY_SECRET starts with: ${INFEGY_SECRET:0:5}..."
-        env:
-          INFEGY_SECRET: ${{ secrets.INFEGY_SECRET }}
-      - name: Inject INFEGY_SECRET
-        run: |
-          sed -i 's/%%INFEGY_SECRET%%/${{ secrets.INFEGY_SECRET }}/g' trends.html
-      - name: Verify injection
-        run: |
-          grep -q "${{ secrets.INFEGY_SECRET }}" trends.html && echo "Secret injected successfully" || echo "Secret injection failed"
-      - name: Deploy
+          echo "window.INFEGY_SECRET = '${{ secrets.INFEGY_SECRET }}';" > env.js
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

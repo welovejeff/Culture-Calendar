@@ -2,5 +2,7 @@
 .DS_Store
 .env
 config.js
+env.js
+
 
 
