@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const trendsUrl = 'https://trends.google.com/trends/trendingsearches/daily/rss?geo=US';
 
     // Add this line at the top of the file
-    const INFEGY_SECRET = window.INFEGY_SECRET || (typeof config !== 'undefined' ? config.INFEGY_SECRET : null);
+    const INFEGY_SECRET = window.INFEGY_SECRET || null;
 
     function fetchTrends() {
         fetch(corsProxy + trendsUrl)
@@ -150,12 +150,16 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsContainer.innerHTML = '<p>Loading results...</p>';
 
         try {
+            if (!INFEGY_SECRET) {
+                throw new Error('INFEGY_SECRET is not defined. Unable to make API request.');
+            }
+
             const corsProxy = 'https://cors-anywhere.herokuapp.com/';
             const apiUrl = 'https://starscape.infegy.com/api/query/records';
             const response = await fetch(corsProxy + apiUrl, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${INFEGY_SECRET}`, // Use INFEGY_SECRET here
+                    'Authorization': `Bearer ${INFEGY_SECRET}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -179,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
             displaySocialListeningResults(data.records);
         } catch (error) {
             console.error('Error fetching social listening data:', error);
-            resultsContainer.innerHTML = '<p>An error occurred while fetching data. Please try again.</p>';
+            resultsContainer.innerHTML = `<p>An error occurred while fetching data: ${error.message}</p>`;
         } finally {
             searchButton.disabled = false;
             searchButton.textContent = 'Search';
