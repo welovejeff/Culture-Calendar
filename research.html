@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4C's Research Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .research-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #researchForm {
+            display: flex;
+            margin-bottom: 30px;
+        }
+        #brandInput {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+        }
+        #researchForm button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #researchForm button:hover {
+            background-color: #0056b3;
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .result-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .result-card h3 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .result-card p {
+            margin: 0;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar-nav">
+        <a href="index.html"><i class="fas fa-home"></i></a>
+        <a href="calendar.html"><i class="fas fa-calendar"></i></a>
+        <a href="trends.html"><i class="fas fa-fire"></i></a>
+        <a href="newsletters.html"><i class="fas fa-envelope-open-text"></i></a>
+        <a href="research.html" class="active"><i class="fas fa-search"></i></a>
+    </nav>
+    <div class="content-wrapper">
+        <div class="research-container">
+            <h1>4C's Research Tool</h1>
+            <form id="researchForm">
+                <input
+                    type="text"
+                    id="brandInput"
+                    placeholder="Enter brand name"
+                    required
+                />
+                <button type="submit">
+                    <i class="fas fa-search"></i> Research
+                </button>
+            </form>
+            <div id="results" class="hidden">
+                <h2>Results for <span id="brandName"></span></h2>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3><i class="fas fa-building"></i> Company</h3>
+                        <p id="companyResult"></p>
+                    </div>
+                    <div class="result-card">
+                        <h3><i class="fas fa-tags"></i> Category</h3>
+                        <p id="categoryResult"></p>
+                    </div>
+                    <div class="result-card">
+                        <h3><i class="fas fa-users"></i> Consumer</h3>
+                        <p id="consumerResult"></p>
+                    </div>
+                    <div class="result-card">
+                        <h3><i class="fas fa-chart-line"></i> Competition</h3>
+                        <p id="competitionResult"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="research.js"></script>
+</body>
+</html>

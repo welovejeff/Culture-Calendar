@@ -1580,3 +1580,171 @@ body {
     margin-top: 0;
     color: var(--primary-color);
 }
+
+/* Add these styles to your existing styles.css file */
+
+.content-wrapper {
+    text-align: center;
+    width: calc(100% - 60px);
+    padding: 20px;
+    margin-left: 60px;
+    box-sizing: border-box;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 600px; /* Reduced max-width for centering */
+    margin: 0 auto;
+}
+
+.search-container {
+    margin-bottom: 2rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#newsletter-search {
+    width: calc(100% - 60px);
+    padding: 15px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 25px 0 0 25px;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#search-btn {
+    width: 60px;
+    padding: 15px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0 25px 25px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.newsletter-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.newsletter-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.newsletter-card h2 {
+    margin: 0 0 0.5rem 0;
+    color: #007bff;
+    font-size: 1.5rem;
+}
+
+.newsletter-card p {
+    margin: 0 0 1rem 0;
+    color: #666;
+}
+
+.view-issues-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+}
+
+/* Adjust modal styles for better centering */
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 2rem;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .content-wrapper {
+        width: 100%;
+        margin-left: 0;
+        padding-top: 80px;
+    }
+}
+
+/* General styles */
+.content-wrapper {
+    width: calc(100% - 60px);
+    padding: 20px;
+    margin-left: 60px;
+    box-sizing: border-box;
+}
+
+/* Calendar-specific styles */
+.calendar-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: flex-start;
+}
+
+#calendar-container {
+    flex: 1;
+    margin-right: 20px;
+    min-width: 0;
+    overflow: hidden;
+    width: 100%;
+}
+
+.calendar-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    width: 100%;
+}
+
+/* Newsletter-specific styles */
+.newsletter-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Existing styles for search, newsletter cards, etc. */
+/* ... (keep the rest of your existing styles) ... */
+
+/* Media query for responsiveness */
+@media (max-width: 768px) {
+    .calendar-container {
+        flex-direction: column;
+    }
+
+    #calendar-container {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .calendar-sidebar {
+        width: 100%;
+        position: static;
+    }
+}
