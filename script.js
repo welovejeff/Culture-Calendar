@@ -9,7 +9,7 @@ let calendarData = [];
 let holidays = [];
 let observances = [];
 let selectedHolidays = [];
-let selectedObservances = [];
+let selectedObservances = [];;
 
 // At the beginning of the file, add this function
 function logState() {
@@ -1229,3 +1229,223 @@ window.addEventListener('load', () => {
     console.log("Window loaded");
     logState();
 });
+
+// Wrap all DOM-dependent code in a DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('newsletter-search');
+    const searchBtn = document.getElementById('search-btn');
+    const searchResults = document.getElementById('search-results');
+    const modal = document.getElementById('newsletter-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const issueList = document.getElementById('issue-list');
+    const closeBtn = document.getElementsByClassName('close')[0];
+
+    // Sample data - replace with actual data in a real application
+    const newsletters = {
+        'link-in-bio': [
+            { date: 'May 15, 2023', title: 'Top 5 Instagram Strategies for 2023' },
+            { date: 'May 8, 2023', title: 'How to Leverage TikTok for Brand Growth' },
+            { date: 'May 1, 2023', title: 'The Rise of Social Commerce: What You Need to Know' }
+        ],
+        'icymi': [
+            { date: 'May 14, 2023', title: 'Twitter\'s Latest Updates: What You Missed' },
+            { date: 'May 7, 2023', title: 'The Boom of AI-Generated Content on Social Platforms' },
+            { date: 'April 30, 2023', title: 'Facebook\'s New Features for Content Creators' }
+        ],
+        'snaxshot': [
+            { date: 'May 13, 2023', title: 'Plant-Based Innovations Taking Over Grocery Shelves' },
+            { date: 'May 6, 2023', title: 'The Rise of Functional Beverages in 2023' },
+            { date: 'April 29, 2023', title: 'Sustainable Packaging Trends in the Food Industry' }
+        ]
+    };
+
+    function performSearch() {
+        const searchTerm = searchInput.value.toLowerCase();
+        let results = [];
+
+        for (let newsletter in newsletters) {
+            results = results.concat(newsletters[newsletter].filter(issue => 
+                issue.title.toLowerCase().includes(searchTerm)
+            ).map(issue => ({...issue, newsletter})));
+        }
+
+        displaySearchResults(results);
+    }
+
+    function displaySearchResults(results) {
+        searchResults.innerHTML = '';
+        if (results.length === 0) {
+            searchResults.innerHTML = '<p>No results found.</p>';
+            return;
+        }
+
+        const ul = document.createElement('ul');
+        results.forEach(result => {
+            const li = document.createElement('li');
+            li.textContent = `${result.newsletter}: ${result.title} (${result.date})`;
+            ul.appendChild(li);
+        });
+        searchResults.appendChild(ul);
+    }
+
+    function showNewsletter(newsletter) {
+        modalTitle.textContent = newsletter.charAt(0).toUpperCase() + newsletter.slice(1).replace('-', ' ');
+        issueList.innerHTML = '';
+        newsletters[newsletter].forEach(issue => {
+            const issueItem = document.createElement('div');
+            issueItem.className = 'issue-item';
+            issueItem.innerHTML = `
+                <h3>${issue.title}</h3>
+                <p>${issue.date}</p>
+            `;
+            issueList.appendChild(issueItem);
+        });
+        modal.style.display = 'block';
+    }
+
+    // Event listeners
+    if (searchBtn) {
+        searchBtn.addEventListener('click', performSearch);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+
+    document.querySelectorAll('.view-issues-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const newsletter = e.target.closest('.newsletter-card').dataset.newsletter;
+            showNewsletter(newsletter);
+        });
+    });
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // Wrap the autocomplete setup in a function
+    function initializeAutocomplete() {
+        let autocompleteItems = [
+            { title: "Instagram Growth Strategies", category: "Link In Bio" },
+            { title: "TikTok for Brand Awareness", category: "Link In Bio" },
+            { title: "Maximizing LinkedIn Engagement", category: "Link In Bio" },
+            { title: "Twitter's New Features Explained", category: "ICYMI" },
+            { title: "Facebook Algorithm Changes", category: "ICYMI" },
+            { title: "Pinterest Marketing Tips", category: "ICYMI" },
+            { title: "Plant-Based Food Trends", category: "Snaxshot" },
+            { title: "Sustainable Packaging Innovations", category: "Snaxshot" },
+            { title: "Functional Beverage Market Analysis", category: "Snaxshot" }
+        ];
+
+        function setupAutocomplete() {
+            const searchInput = document.getElementById('newsletter-search');
+            const searchContainer = document.querySelector('.search-container');
+            
+            if (!searchInput || !searchContainer) {
+                console.error('Search input or container not found');
+                return;
+            }
+
+            let currentFocus = -1;
+
+            searchInput.addEventListener('input', function(e) {
+                closeAllLists();
+                if (!this.value) return false;
+                
+                const autocompleteList = document.createElement('div');
+                autocompleteList.setAttribute('id', this.id + '-autocomplete-list');
+                autocompleteList.setAttribute('class', 'autocomplete-items');
+                searchContainer.appendChild(autocompleteList);
+
+                const matchingItems = autocompleteItems.filter(item => 
+                    item.title.toLowerCase().includes(this.value.toLowerCase()) ||
+                    item.category.toLowerCase().includes(this.value.toLowerCase())
+                );
+
+                matchingItems.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.classList.add('autocomplete-item');
+                    
+                    const regex = new RegExp(this.value, 'gi');
+                    const highlightedTitle = item.title.replace(regex, match => `<strong>${match}</strong>`);
+                    
+                    itemElement.innerHTML = `
+                        ${highlightedTitle}
+                        <br>
+                        <span class="autocomplete-category">${item.category}</span>
+                    `;
+                    
+                    itemElement.addEventListener('click', function(e) {
+                        searchInput.value = item.title;
+                        closeAllLists();
+                    });
+                    
+                    autocompleteList.appendChild(itemElement);
+                });
+            });
+
+            searchInput.addEventListener('keydown', function(e) {
+                let x = document.getElementById(this.id + '-autocomplete-list');
+                if (x) x = x.getElementsByTagName('div');
+                if (e.keyCode == 40) {
+                    currentFocus++;
+                    addActive(x);
+                } else if (e.keyCode == 38) {
+                    currentFocus--;
+                    addActive(x);
+                } else if (e.keyCode == 13) {
+                    e.preventDefault();
+                    if (currentFocus > -1) {
+                        if (x) x[currentFocus].click();
+                    }
+                }
+            });
+
+            function addActive(x) {
+                if (!x) return false;
+                removeActive(x);
+                if (currentFocus >= x.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = (x.length - 1);
+                x[currentFocus].classList.add('autocomplete-active');
+            }
+
+            function removeActive(x) {
+                for (let i = 0; i < x.length; i++) {
+                    x[i].classList.remove('autocomplete-active');
+                }
+            }
+
+            function closeAllLists(elmnt) {
+                const x = document.getElementsByClassName('autocomplete-items');
+                for (let i = 0; i < x.length; i++) {
+                    if (elmnt != x[i] && elmnt != searchInput) {
+                        x[i].parentNode.removeChild(x[i]);
+                    }
+                }
+            }
+
+            document.addEventListener('click', function(e) {
+                closeAllLists(e.target);
+            });
+        }
+
+        setupAutocomplete();
+    }
+
+    // Initialize autocomplete
+    initializeAutocomplete();
+});
+
+// Keep any existing code outside of the DOMContentLoaded event listener
