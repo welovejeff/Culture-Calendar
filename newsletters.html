@@ -18,6 +18,10 @@
             top: 100%;
             left: 0;
             right: 0;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: #ffffff;
         }
         .autocomplete-item {
             padding: 10px;
@@ -30,6 +34,10 @@
         }
         .autocomplete-active {
             background-color: #e9e9e9;
+        }
+        .autocomplete-category {
+            font-size: 0.8em;
+            color: #666;
         }
     </style>
 </head>
@@ -69,6 +77,16 @@
                     <p>Trends in CPG and food</p>
                     <button class="view-issues-btn" data-newsletter="snaxshot">View Past Issues</button>
                 </div>
+                <div class="newsletter-card" data-newsletter="after-school">
+                    <h2>After School</h2>
+                    <p>A youth trends cheat sheet</p>
+                    <button class="view-issues-btn" data-newsletter="after-school">View Past Issues</button>
+                </div>
+                <div class="newsletter-card" data-newsletter="creators-u-should-hire">
+                    <h2>Creators U Should Hire</h2>
+                    <p>Identify influencers to work with</p>
+                    <button class="view-issues-btn" data-newsletter="creators-u-should-hire">View Past Issues</button>
+                </div>
             </div>
         </div>
     </div>
@@ -106,6 +124,16 @@ document.addEventListener('DOMContentLoaded', function() {
             { date: 'May 13, 2023', title: 'Plant-Based Innovations Taking Over Grocery Shelves' },
             { date: 'May 6, 2023', title: 'The Rise of Functional Beverages in 2023' },
             { date: 'April 29, 2023', title: 'Sustainable Packaging Trends in the Food Industry' }
+        ],
+        'after-school': [
+            { date: 'May 12, 2023', title: 'Top 5 TikTok Trends Among Gen Z' },
+            { date: 'May 5, 2023', title: 'The Rise of BeReal: What Parents Need to Know' },
+            { date: 'April 28, 2023', title: 'How Teens Are Using AI in Their Daily Lives' }
+        ],
+        'creators-u-should-hire': [
+            { date: 'May 11, 2023', title: 'Rising Stars in Tech Education Content' },
+            { date: 'May 4, 2023', title: 'Top Sustainable Living Influencers to Watch' },
+            { date: 'April 27, 2023', title: 'Micro-Influencers Making Waves in Niche Markets' }
         ]
     };
 
@@ -140,6 +168,100 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.style.display = 'none';
         }
     });
+
+    // New autocomplete functionality
+    const searchInput = document.getElementById('newsletter-search');
+    const searchContainer = document.querySelector('.search-container');
+
+    // Sample autocomplete data
+    const autocompleteItems = [
+        { title: "Instagram Growth Strategies", category: "Link In Bio" },
+        { title: "TikTok for Brand Awareness", category: "Link In Bio" },
+        { title: "Maximizing LinkedIn Engagement", category: "Link In Bio" },
+        { title: "Twitter's New Features Explained", category: "ICYMI" },
+        { title: "Facebook Algorithm Changes", category: "ICYMI" },
+        { title: "Pinterest Marketing Tips", category: "ICYMI" },
+        { title: "Plant-Based Food Trends", category: "Snaxshot" },
+        { title: "Sustainable Packaging Innovations", category: "Snaxshot" },
+        { title: "Functional Beverage Market Analysis", category: "Snaxshot" },
+        { title: "Gen Z Social Media Habits", category: "After School" },
+        { title: "Emerging Teen Apps", category: "After School" },
+        { title: "Youth Culture Shifts", category: "After School" },
+        { title: "Top Tech Influencers", category: "Creators U Should Hire" },
+        { title: "Rising Lifestyle Bloggers", category: "Creators U Should Hire" },
+        { title: "Niche Market Influencers", category: "Creators U Should Hire" }
+    ];
+
+    function autocomplete(inp, arr) {
+        let currentFocus;
+        inp.addEventListener("input", function(e) {
+            let a, b, i, val = this.value;
+            closeAllLists();
+            if (!val) { return false; }
+            currentFocus = -1;
+            a = document.createElement("DIV");
+            a.setAttribute("id", this.id + "autocomplete-list");
+            a.setAttribute("class", "autocomplete-items");
+            this.parentNode.appendChild(a);
+            for (i = 0; i < arr.length; i++) {
+                if (arr[i].title.substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                    b = document.createElement("DIV");
+                    b.classList.add("autocomplete-item");
+                    b.innerHTML = "<strong>" + arr[i].title.substr(0, val.length) + "</strong>";
+                    b.innerHTML += arr[i].title.substr(val.length);
+                    b.innerHTML += "<br><span class='autocomplete-category'>" + arr[i].category + "</span>";
+                    b.addEventListener("click", function(e) {
+                        inp.value = this.getElementsByTagName("strong")[0].textContent + this.textContent.split('<br>')[0].slice(val.length);
+                        closeAllLists();
+                    });
+                    a.appendChild(b);
+                }
+            }
+        });
+        inp.addEventListener("keydown", function(e) {
+            var x = document.getElementById(this.id + "autocomplete-list");
+            if (x) x = x.getElementsByTagName("div");
+            if (e.keyCode == 40) {
+                currentFocus++;
+                addActive(x);
+            } else if (e.keyCode == 38) {
+                currentFocus--;
+                addActive(x);
+            } else if (e.keyCode == 13) {
+                e.preventDefault();
+                if (currentFocus > -1) {
+                    if (x) x[currentFocus].click();
+                }
+            }
+        });
+        function addActive(x) {
+            if (!x) return false;
+            removeActive(x);
+            if (currentFocus >= x.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (x.length - 1);
+            x[currentFocus].classList.add("autocomplete-active");
+        }
+        function removeActive(x) {
+            for (var i = 0; i < x.length; i++) {
+                x[i].classList.remove("autocomplete-active");
+            }
+        }
+        function closeAllLists(elmnt) {
+            var x = document.getElementsByClassName("autocomplete-items");
+            for (var i = 0; i < x.length; i++) {
+                if (elmnt != x[i] && elmnt != inp) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
+            }
+        }
+        document.addEventListener("click", function (e) {
+            closeAllLists(e.target);
+        });
+    }
+
+    autocomplete(searchInput, autocompleteItems);
+
+    // Existing event listeners and functions
 });
 </script>
 </body>
