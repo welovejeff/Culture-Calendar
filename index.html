@@ -6,49 +6,15 @@
     <title>Mekanism AI</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .dashboard-item {
-            background-color: #f0f0f0;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .dashboard-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .dashboard-item i {
-            font-size: 48px;
-            margin-bottom: 10px;
-            color: #4a90e2;
-        }
-        .dashboard-item h2 {
-            margin: 0;
-            font-size: 24px;
-        }
-        .dashboard-item p {
-            margin: 10px 0 0;
-            font-size: 14px;
-            color: #666;
-        }
-    </style>
 </head>
 <body>
     <nav class="sidebar-nav">
-        <a href="index.html" class="active"><i class="fas fa-home"></i></a>
-        <a href="calendar.html"><i class="fas fa-calendar"></i></a>
-        <a href="trends.html"><i class="fas fa-fire"></i></a>
-        <a href="newsletters.html"><i class="fas fa-envelope-open-text"></i></a>
-        <a href="research.html"><i class="fas fa-search"></i></a>
+        <a href="index.html" class="active" data-tooltip="Home"><i class="fas fa-home"></i></a>
+        <a href="calendar.html" data-tooltip="Content Calendar"><i class="fas fa-calendar"></i></a>
+        <a href="trends.html" data-tooltip="Trends"><i class="fas fa-fire"></i></a>
+        <a href="newsletters.html" data-tooltip="Newsletters"><i class="fas fa-envelope-open-text"></i></a>
+        <a href="research.html" data-tooltip="Research"><i class="fas fa-search"></i></a>
+        <a href="create.html" data-tooltip="Content Creation"><i class="fas fa-paint-brush"></i></a>
     </nav>
     <div class="content-wrapper">
         <h1>Mekanism AI</h1>
@@ -72,6 +38,11 @@
                 <i class="fas fa-search"></i>
                 <h2>Research</h2>
                 <p>Conduct brand and market research</p>
+            </a>
+            <a href="create.html" class="dashboard-item full-width-item">
+                <i class="fas fa-paint-brush"></i>
+                <h2>Content Creation Studio</h2>
+                <p>Access AI-powered image generation tools</p>
             </a>
         </div>
     </div>
