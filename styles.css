@@ -1748,3 +1748,48 @@ body {
         position: static;
     }
 }
+
+/* Add these styles at the end of your existing styles.css file */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.dashboard-item {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.dashboard-item i {
+    font-size: 48px;
+    margin-bottom: 10px;
+    color: #4a90e2;
+}
+
+.dashboard-item h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.dashboard-item p {
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.full-width-item {
+    grid-column: 1 / -1;
+}

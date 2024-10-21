@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Creation Studio - Mekanism AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .create-studio-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .create-input-group {
+            margin-bottom: 20px;
+        }
+        .create-label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .create-select, .create-input, .create-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .create-textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .create-aspect-ratio {
+            display: flex;
+            gap: 10px;
+        }
+        .create-aspect-ratio .create-input {
+            width: calc(50% - 5px);
+        }
+        .create-button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .create-button:hover {
+            background-color: #3a78c2;
+        }
+        .create-image-preview {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar-nav">
+        <a href="index.html" data-tooltip="Home"><i class="fas fa-home"></i></a>
+        <a href="calendar.html" data-tooltip="Content Calendar"><i class="fas fa-calendar"></i></a>
+        <a href="trends.html" data-tooltip="Trends"><i class="fas fa-fire"></i></a>
+        <a href="newsletters.html" data-tooltip="Newsletters"><i class="fas fa-envelope-open-text"></i></a>
+        <a href="research.html" data-tooltip="Research"><i class="fas fa-search"></i></a>
+        <a href="create.html" class="active" data-tooltip="Content Creation"><i class="fas fa-paint-brush"></i></a>
+    </nav>
+    <div class="content-wrapper">
+        <h1>Content Creation Studio</h1>
+        <div class="create-studio-container">
+            <form id="image-generation-form">
+                <div class="create-input-group">
+                    <label for="ai-model" class="create-label">Select AI Model:</label>
+                    <select id="ai-model" class="create-select" required>
+                        <option value="">Choose a model</option>
+                        <option value="midjourney">Midjourney</option>
+                        <option value="firefly">Adobe Firefly</option>
+                        <option value="dalle3">DALL-E 3</option>
+                        <option value="imagen3">Imagen 3</option>
+                    </select>
+                </div>
+                <div class="create-input-group create-aspect-ratio">
+                    <div>
+                        <label for="width" class="create-label">Width:</label>
+                        <input type="number" id="width" class="create-input" min="1" max="4096" value="1024" required>
+                    </div>
+                    <div>
+                        <label for="height" class="create-label">Height:</label>
+                        <input type="number" id="height" class="create-input" min="1" max="4096" value="1024" required>
+                    </div>
+                </div>
+                <div class="create-input-group">
+                    <label for="prompt" class="create-label">Enter your prompt:</label>
+                    <textarea id="prompt" class="create-textarea" required placeholder="Describe the image you want to generate..."></textarea>
+                </div>
+                <button type="submit" class="create-button">Generate Image</button>
+            </form>
+            <div id="image-preview" class="create-image-preview">
+                <p>Your generated image will appear here.</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('image-generation-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const model = document.getElementById('ai-model').value;
+            const width = document.getElementById('width').value;
+            const height = document.getElementById('height').value;
+            const prompt = document.getElementById('prompt').value;
+            
+            // Placeholder for image generation
+            document.getElementById('image-preview').innerHTML = `
+                <h3>Image Generation Request:</h3>
+                <p><strong>Model:</strong> ${model}</p>
+                <p><strong>Size:</strong> ${width}x${height}</p>
+                <p><strong>Prompt:</strong> ${prompt}</p>
+                <p>Image generation functionality will be implemented in the future.</p>
+            `;
+        });
+    </script>
+</body>
+</html>
